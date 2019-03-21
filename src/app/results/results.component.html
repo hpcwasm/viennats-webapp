@@ -24,7 +24,7 @@
             <div *ngIf="this.webworkerService.results.length == 0">No results available. Intermediate results will be
               loaded here during the simulation.</div>
             <mat-list-item role="listitem" *ngFor="let file  of this.webworkerService.results;  index as i">
-              <mat-checkbox [(checked)]="file.selected" (change)="changeVisibility(i)">{{file.filename}}</mat-checkbox>
+              <mat-checkbox [(checked)]="this.webworkerService.results[this.webworkerService.results.length-i-1].selected" (change)="changeVisibility(this.webworkerService.results.length-i-1)">{{this.webworkerService.results[this.webworkerService.results.length-i-1].filename}} </mat-checkbox><mat-icon (click)="downloadResult(this.webworkerService.results.length-i-1)" svgIcon="mydownload"></mat-icon>
             </mat-list-item>
           </div>
         </div>

@@ -11,6 +11,9 @@ export interface ParFile {
   imagepath: string;
   description: string;
 }
+class ParFileClass implements ParFile{
+  constructor(public value: string, public viewValue: string, public imagepath: string, public description: string){}
+}
 
 export class Result {
   constructor(
@@ -21,16 +24,18 @@ export class Result {
 
 @Injectable({providedIn: 'root'})
 export class WebworkerService {
-  parfiles: ParFile[] = [
-    {value: './assets/simulations/parwasm_Deposition2D.txt', viewValue: 'Deposition 2D', imagepath: './assets/simulations/parwasm_Deposition2D.png', description: 'This is a short description of this simulation.'},
-    {value: './assets/simulations/parwasm_Deposition3D.txt', viewValue: 'Deposition 3D', imagepath: './assets/simulations/parwasm_Deposition3D.png', description: 'This is a short description of this simulation.'},    
-    {value: './assets/simulations/parwasm_SF6_Etching.txt', viewValue: 'SF6 Etching', imagepath: './assets/simulations/parwasm_SF6_Etching.png', description: 'This is a short description of this simulation.'},
-    {value: './assets/simulations/parwasm_CFx_Deposition.txt', viewValue: 'CFx Deposition', imagepath: './assets/simulations/parwasm_CFx_Deposition.png', description: 'This is a short description of this simulation.'},
-    {value: './assets/simulations/parwasm_TEOS_Deposition.txt', viewValue: 'TEOS Deposition', imagepath: './assets/simulations/parwasm_TEOS_Deposition.png', description: 'This is a short description of this simulation.'},
-  ];
+  parfiles: ParFile[] = [];
+  // parfiles: ParFile[] = [
+  //   {value: './assets/simulations/parwasm_Deposition2D.txt', viewValue: 'Deposition 2D', imagepath: './assets/simulations/parwasm_Deposition2D.png', description: 'This is a short description of this simulation.'},
+  //   {value: './assets/simulations/parwasm_Deposition3D.txt', viewValue: 'Deposition 3D', imagepath: './assets/simulations/parwasm_Deposition3D.png', description: 'This is a short description of this simulation.'},    
+  //   {value: './assets/simulations/parwasm_SF6_Etching.txt', viewValue: 'SF6 Etching', imagepath: './assets/simulations/parwasm_SF6_Etching.png', description: 'This is a short description of this simulation.'},
+  //   {value: './assets/simulations/parwasm_CFx_Deposition.txt', viewValue: 'CFx Deposition', imagepath: './assets/simulations/parwasm_CFx_Deposition.png', description: 'This is a short description of this simulation.'},
+  //   {value: './assets/simulations/parwasm_TEOS_Deposition.txt', viewValue: 'TEOS Deposition', imagepath: './assets/simulations/parwasm_TEOS_Deposition.png', description: 'This is a short description of this simulation.'},
+  // ];
+  
 
   //  selectedParfile: string = undefined;
-  selectedParfile: string = this.parfiles[0].value;
+  selectedParfile: string;
 
   results: Result[] = [];
 
@@ -71,8 +76,20 @@ export class WebworkerService {
   // stdoutReady: EventEmitter<any> = new EventEmitter();
 
   constructor(private http: HttpClient) {
-    this.loadfile(this.selectedParfile);
-    this.initializeSimulation();
+    this.getSimulations().subscribe(data => 
+    {
+      console.log("received database.json");
+      console.log(data);
+      for (let example of data.examples) {
+        this.parfiles.push(new ParFileClass(example.value, example.viewValue, example.imagepath, example.description));
+      }
+      this.selectedParfile = this.parfiles[0].value;
+      this.loadfile(this.selectedParfile);
+      this.initializeSimulation();
+    }
+    );    
+    
+    
   }
 
   clearResults() {
@@ -130,6 +147,10 @@ export class WebworkerService {
                   '// error loading parameter file ' + filepath;
             });
   }
+
+  public getSimulations(): Observable<any> {
+    return this.http.get("./assets/simulations/database.json");
+}
 
   startSimulation() {
     this.clearResults();

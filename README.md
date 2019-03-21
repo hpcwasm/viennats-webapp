@@ -28,7 +28,7 @@ https://github.com/babel/babel/issues/8599
 
 https://stackoverflow.com/questions/48643556/use-vtk-js-glsl-files-in-angular-cli-app
 
-# copy buildwasm files from https://github.com/hpcwasm/viennats-dev/buildwasm (buildfolder) to /src/assets/buildwasm:
+# copy compiled wasm files from https://github.com/hpcwasm/viennats-dev/ (buildfolder) to /src/assets/buildwasm:
 
 - viennats.js
 - viennats.wasm
@@ -37,5 +37,18 @@ https://stackoverflow.com/questions/48643556/use-vtk-js-glsl-files-in-angular-cl
 
 # serve local
 
+```bash
 ng serve
+```
+
+# deploy
+```bash
 ng build --prod
+ng build --prod --base-href "https://hpcwasm.github.io/viennats/"
+```
+
+# update https://github.com/hpcwasm/viennats
+
+copy dist folder to https://github.com/hpcwasm/viennats/docs
+
+# test hpcwasm.github.io/viennats

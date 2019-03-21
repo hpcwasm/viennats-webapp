@@ -23,5 +23,8 @@ export class AppComponent {
     iconRegistry.addSvgIcon(
         'mydesktop',
         sanitizer.bypassSecurityTrustResourceUrl('assets/icons/desktop.svg'));
+        iconRegistry.addSvgIcon(
+          'mydownload',
+          sanitizer.bypassSecurityTrustResourceUrl('assets/icons/download.svg'));        
   }
 }

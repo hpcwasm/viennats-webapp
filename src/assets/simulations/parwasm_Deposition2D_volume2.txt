@@ -1,0 +1,38 @@
+geometry_file = "/assets/geometry2.dx";   // input geometry
+output_path = "./isotropic/";  // relative to this file or absolute
+omp_threads=1; // how many CPU threads to use
+cfl_condition = 0.1;  // advection accuracy, must be <0.5
+grid_delta = 0.5; // grid resolution (absolute)
+default_disc_orientation = {1,0,0}; // average surface normal for ray tracing
+num_dimensions = 2;
+print_vtk=true;
+print_volume_tetra=false;
+print_volume_hull=true;
+boundary_conditions = {	{INFINITE,INFINITE},	{REFLECTIVE,REFLECTIVE}};
+open_boundary="-x"; //direction of source plane
+processes = {
+  {
+    process_time= 25;
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={0.1,0.1}; // rate to surface normal or isotropic_rates={0.1};
+      direction={1,0,0};  // for directional_rates
+      directional_rates={0.3,0.3}; // rate in direction
+    };
+	output_volume={0,5,10,15,20,25};
+
+  },
+  {
+    process_time= 25;
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={0.1,0.1}; // rate to surface normal or isotropic_rates={0.1};
+      direction={1,1,0};  // for directional_rates
+      directional_rates={0.3,0.3}; // rate in direction
+    };
+	output_volume={0,5,10,15,20,25};
+
+  }  
+};

@@ -38,7 +38,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   mapper: any;
   actor: any;
 
-  tucolor: Color;
+  redcolor: Color;
 
   // props: any;
   subscription: Subscription;
@@ -50,7 +50,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // this.files.push(new File("Filenam3", true));
     // this.files.push(new File("Filenam4", false));
     // this.tucolor = new Color(0,102,153);
-    this.tucolor = new Color(255,0,0);
+    this.redcolor = new Color(255/255,0,0);
     this.subscription =
         this.webworkerService.getNewResults().subscribe(message => {
           this.renderResult(message.index);
@@ -100,17 +100,31 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   // listen on event of new result ready
   renderResult(index: number) {
+    if (index >0){
+      if (this.webworkerService.results[index].selected == true)
+        {
+          this.changeVisibility(index-1);
+        }
+    }
     const encoder = new TextEncoder();
     const buffer = encoder.encode(this.webworkerService.results[index].vtkfile);
     var vtpReader = vtkXMLPolyDataReader.newInstance();
     vtpReader.parseAsArrayBuffer(buffer);
     var polydata = vtpReader.getOutputData(0);
-    var mapper = vtkMapper.newInstance();
+    var mapper = vtkMapper.newInstance({scalarVisibility: true, scalarRange: [0, 10]});
     // var actor = vtkActor.newInstance();
+
+    if (this.webworkerService.results[index].filename.includes('Hull'))
+    {
+      mapper.setScalarModeToUseCellData();
+      // console.log("########## polydata.getCellData()");
+      // console.log(polydata.getCellData().getScalars().getNumberOfValues());
+      // console.log(polydata.getCellData().getScalars().getData());
+    }
 
     this.webworkerService.results[index].actor.setMapper(mapper);
     // this.webworkerService.results[index].actor.getProperty().setColor(1, 0, 0);
-    this.webworkerService.results[index].actor.getProperty().setColor(this.tucolor.R/255.0,this.tucolor.G/255.0,this.tucolor.B/255.0);
+    this.webworkerService.results[index].actor.getProperty().setColor(this.redcolor.R,this.redcolor.G,this.redcolor.B);
     mapper.setInputData(polydata);
     this.renderer.addActor(this.webworkerService.results[index].actor);
     if (index == 0){
@@ -179,5 +193,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.renderWindow.render();
     // this.renderer.resetCamera();
 
+  }
+
+  downloadResult(idx: number){
+    console.log("############ download");
   }
 }
