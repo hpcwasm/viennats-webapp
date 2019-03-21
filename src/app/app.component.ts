@@ -1,0 +1,27 @@
+import {Component, OnInit} from '@angular/core';
+import {MatIconRegistry} from '@angular/material/icon';
+import {DomSanitizer} from '@angular/platform-browser';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.sass'],
+  viewProviders: [MatIconRegistry]
+})
+export class AppComponent {
+  deviceInfo = null;
+
+  title = 'ViennaTS- WebAssembly';
+
+  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    iconRegistry.addSvgIcon(
+        'myphone',
+        sanitizer.bypassSecurityTrustResourceUrl('assets/icons/phone.svg'));
+    iconRegistry.addSvgIcon(
+        'mytablet',
+        sanitizer.bypassSecurityTrustResourceUrl('assets/icons/tablet.svg'));
+    iconRegistry.addSvgIcon(
+        'mydesktop',
+        sanitizer.bypassSecurityTrustResourceUrl('assets/icons/desktop.svg'));
+  }
+}

@@ -1,0 +1,43 @@
+<mat-accordion [multi]="true">
+
+  <!-- Parameters --> 
+  <mat-expansion-panel expanded="false">
+    <mat-expansion-panel-header>
+      <mat-panel-title fxFlex="100px">
+        Parameters
+      </mat-panel-title>
+      <mat-panel-description>
+        Loaded parameter file: {{webworkerService.selectedParfile}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-parameters></app-parameters>
+  </mat-expansion-panel>
+
+  <!-- Simulation -->
+  <mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title fxFlex="100px">
+        Simulation
+      </mat-panel-title>
+      <mat-panel-description>
+          Status of simulation engine: <div [style.color]="webworkerService.getStatusColor(webworkerService.status)"> &nbsp;{{webworkerService.status}}</div>
+        <!-- Start/stop simulation and view console output -->
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-simulationstatus></app-simulationstatus>
+  </mat-expansion-panel>
+
+  <!-- results -->
+  <mat-expansion-panel expanded="false">
+    <mat-expansion-panel-header>
+      <mat-panel-title fxFlex="100px">
+        Results Viewer
+      </mat-panel-title>
+      <mat-panel-description>
+        Current number of results: {{this.webworkerService.results.length}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-results></app-results>
+  </mat-expansion-panel>
+
+</mat-accordion>

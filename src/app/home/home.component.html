@@ -1,0 +1,35 @@
+<mat-card>
+  <mat-card-title>Welcome to the WebAssembly port of <a href="https://github.com/viennats/viennats-dev" target="_blank">ViennaTS</a>!</mat-card-title>
+  <div fxLayout="column" fxLayoutGap="20px">
+
+    <div class="mat-h3">
+    </div>
+    <!-- <div class="mat-h3">Your browser needs support for WebAssembly, you can check your browser version <a [routerLink]="['/browserinfo']">here</a>!
+    </div> -->
+    <div class="mat-body-2">You can explore the capabilities by running on of the example simulations listed below.</div>
+    <mat-divider></mat-divider>
+
+    <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-evenly center">
+      <div fxLayout="row wrap" fxLayoutGap="20px grid" fxLayoutAlign="start start">
+        <div *ngFor="let example of webworkerService.parfiles; index as i">
+            <!-- <mat-card *ngIf="i<5" class="example-card" > -->
+          <mat-card class="example-card" >
+            <mat-card-header>
+              <mat-card-title style="margin-left:-20px;">{{example.viewValue}}</mat-card-title>
+              <!-- <mat-card-subtitle>{{example.value}}</mat-card-subtitle> -->
+            </mat-card-header>
+            <img mat-card-image  [src]="example.imagepath"  alt="processimage">
+            <mat-card-content>
+              <p>
+                {{example.description}}
+              </p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button (click)="runsimulation(example.value)">RUN SIMULATION</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-card>

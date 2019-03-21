@@ -1,0 +1,5 @@
+for i in *.png
+  do convert "$i" -geometry 300x300^ -gravity center -crop 300x300+0+0 "$i"
+done
+
+convert iuelogo.png -geometry 32x32^ -gravity center -crop 32x32+0+0 iuelogo32x32.ico

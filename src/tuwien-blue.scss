@@ -1,0 +1,34 @@
+// http://mcg.mbitson.com/#!?mcgpalette0tuwien=%233f51b5
+
+$tuwien-blue: (
+  50: #e0edf3,
+  100: #b3d1e0,
+  200: #80b3cc,
+  300: #4d94b8,
+  400: #267da8,
+  500: #006699,
+  600: #005e91,
+  700: #005386,
+  800: #00497c,
+  900: #00386b,
+  A100': #9ac6ff,
+  A200': #67aaff,
+  A400': #348dff,
+  A700': #1a7fff,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  )
+);

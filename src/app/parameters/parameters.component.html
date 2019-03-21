@@ -1,0 +1,35 @@
+<mat-tab-group dynamicHeight [(selectedIndex)]="selectedTabIndex">
+
+    <mat-tab label="Load File">
+        <ng-template matTabContent>
+            <div fxLayout="column" fxLayoutAlign="start start">
+                <div fxFlexOffset="20px">
+                    <mat-form-field>
+                        <mat-select (selectionChange)="loadfile()" [(ngModel)]="webworkerService.selectedParfile"
+                            placeholder="Select Parameter File">
+                            <mat-option *ngFor="let parfile of webworkerService.parfiles" [value]="parfile.value">
+                                {{parfile.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-hint>{{webworkerService.selectedParfile}}</mat-hint>
+                </div>
+            </div>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Edit File">
+        <ng-template matTabContent>
+            <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="stretch stretch">
+                <div fxFlexOffset="20px">
+                    <button mat-stroked-button (click)="reloadContent()">reload</button>
+                    <!-- <mat-hint>{{webworkerService.selectedParfile}}</mat-hint> -->
+                </div>
+                <div>
+                    <ngx-codemirror [(ngModel)]="webworkerService.parfilecontent" [options]="editoroptions"></ngx-codemirror>
+                </div>
+            </div>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

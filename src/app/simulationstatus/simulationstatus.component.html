@@ -1,0 +1,27 @@
+<div fxLayout="column" fxLayoutGap="20px">
+    <!-- <mat-divider></mat-divider> -->
+    <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start start">
+        <!-- <div class="mat-body-2"></div>
+        <h2 class="mat-h3">Simulation Progress {{value}}% (timestep x of X)</h2>
+        <mat-progress-bar class="example-margin" [color]="color" [mode]="mode" [value]="value" [bufferValue]="bufferValue">
+        </mat-progress-bar> -->
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <button mat-flat-button color="primary" [disabled]="webworkerService.status == 'running' || webworkerService.status ==  'initializing' ||  webworkerService.status ==  'exception' " (click)="startSimulation()" matTooltip="Start simulation using parameters defined above">Start</button>
+            <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'" (click)="terminateSimulation()">terminate/respawn</button>
+            <!-- <mat-hint>status: {{webworkerService.status}}</mat-hint> -->
+        </div>
+    </div>
+    <!-- <mat-divider></mat-divider> -->
+    <div>
+        <div fxLayout="column">
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+                <h2 class="mat-h3">Console stderr/stdout</h2>
+                <button mat-stroked-button (click)="clearConsole()">clear</button>
+            </div>
+
+            <mat-divider></mat-divider>
+            <app-console #consoleComponent></app-console>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
+</div>

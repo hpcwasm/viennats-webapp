@@ -1,0 +1,31 @@
+<mat-toolbar color="primary">
+
+  <div fxFlex="1 0 100%" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
+    <div>
+      ViennaTS
+      <span class="mat-body-2">{{this.router.url}}</span>
+    </div>
+
+    <div>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </div>
+    <div fxFlex="1 1 auto"></div>
+    <a fxLayout="column" fxLayoutAlign="center center" href="http://www.iue.tuwien.ac.at" target="_blank"> <img height="50px" src="assets/logos/iuelogo.png" alt="iuelogo"></a>
+    <a fxLayout="column" fxLayoutAlign="center center" href="https://www.tuwien.ac.at/" target="_blank"> <img height="50px" src="assets/logos/tulogo.png" alt="tulogo"></a>
+  </div>
+
+</mat-toolbar>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item routerLink="/home">
+    Home
+  </button>
+  <button mat-menu-item routerLink="/simulation">
+    Simulation
+  </button>
+  <button mat-menu-item routerLink="/browserinfo">
+    Browser Info
+  </button>
+</mat-menu>
