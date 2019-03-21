@@ -13,6 +13,8 @@ import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';
 import vtkFullScreenRenderWindow from 'vtk.js/Sources/Rendering/Misc/FullScreenRenderWindow';
 import vtkGenericRenderWindow from 'vtk.js/Sources/Rendering/Misc/GenericRenderWindow';
 
+import {FileSaverService} from 'ngx-filesaver';
+
 import {WebworkerService} from '../services/webworker/webworker.service';
 
 // class File {
@@ -44,7 +46,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   subscriptionResulstCleared: Subscription;
 
-  constructor(public webworkerService: WebworkerService) {
+  constructor(public webworkerService: WebworkerService, private fileSaverService: FileSaverService) {
     // this.files.push(new File("Filenam1", false));
     // this.files.push(new File("Filenam2", false ));
     // this.files.push(new File("Filenam3", true));
@@ -196,6 +198,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   downloadResult(idx: number){
-    console.log("############ download");
+    console.log("############ download: " + this.webworkerService.results[idx].filename);
+    var blob = new Blob([this.webworkerService.results[idx].vtkfile], {type : "text/plain"});
+    this.fileSaverService.save(blob, this.webworkerService.results[idx].filename);
   }
 }
