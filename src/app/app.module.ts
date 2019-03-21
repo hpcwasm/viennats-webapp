@@ -42,7 +42,7 @@ import {SimulationstatusComponent} from './simulationstatus/simulationstatus.com
 import { CancelsimComponent } from './cancelsim/cancelsim.component';
 import { NosupportComponent } from './nosupport/nosupport.component';
 
-
+import { FileSaverModule } from 'ngx-filesaver';
 
 // import {RouteReuseStrategy} from '@angular/router';
 
@@ -73,7 +73,7 @@ import { NosupportComponent } from './nosupport/nosupport.component';
     MatGridListModule, MatCheckboxModule, MatTabsModule, MatSelectModule,
     MatDividerModule, MatTableModule, MatProgressBarModule, FormsModule,
     HttpClientModule, CodemirrorModule, DeviceDetectorModule.forRoot(),
-   FlexLayoutModule
+   FlexLayoutModule, FileSaverModule
   ],
   bootstrap: [AppComponent],
   entryComponents: [CancelsimComponent]
