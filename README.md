@@ -30,10 +30,15 @@ https://stackoverflow.com/questions/48643556/use-vtk-js-glsl-files-in-angular-cl
 
 # copy compiled wasm files from https://github.com/hpcwasm/viennats-dev/ (buildfolder) to /src/assets/buildwasm:
 
-- viennats.js
-- viennats.wasm
-- viennats.data
-- vtsworker.js
+```bash
+HPCWASM_WASM_BIN_DIR=/home/manstetten/github_hpcwasm/viennats-dev/buildwasm
+HPCWASM_WEBAPP_ASSETS=/home/manstetten/github_hpcwasm/viennats-webapp/src/assets/buildwasm
+
+cp $HPCWASM_WASM_BIN_DIR/viennats.js $HPCWASM_WEBAPP_ASSETS/viennats.js
+cp $HPCWASM_WASM_BIN_DIR/viennats.wasm $HPCWASM_WEBAPP_ASSETS/viennats.wasm
+cp $HPCWASM_WASM_BIN_DIR/viennats.data $HPCWASM_WEBAPP_ASSETS/viennats.data
+cp $HPCWASM_WASM_BIN_DIR/vtsworker.js $HPCWASM_WEBAPP_ASSETS/vtsworker.js
+```
 
 # serve local
 
