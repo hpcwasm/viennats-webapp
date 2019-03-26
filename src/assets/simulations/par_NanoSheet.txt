@@ -1,0 +1,322 @@
+// VIENNATS PARAMETER FILE
+// This file creates a stacked nanosheet geometry from a plane surface
+// process flow based on https://doi.org/10.23919/VLSIT.2017.7998183
+
+
+geometry_file = "/assets/sio2_periodic.vtk";   
+
+output_path = "./geometry/";
+
+omp_threads=1;
+cfl_condition = 0.4;
+
+grid_delta = 1.9999; // non-integer for numerical stability
+
+
+default_disc_orientation = {0,0,1};
+
+num_dimensions = 3;
+
+print_vtk=true;
+print_volume_hull=true;
+print_volume_tetra=true;
+print_lvst=false;
+
+boundary_conditions = {
+	{PERIODIC, PERIODIC},
+	{PERIODIC, PERIODIC},
+	{INFINITE,INFINITE}
+};
+
+open_boundary="+z"; //direction of source plane
+
+processes = {
+  {		// SI EPITAXY
+    process_time= 7;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0};
+    };
+    output_times={0,7};
+    output_volume={0,7};
+  },
+  {		// SIGE EPITAXY
+    process_time= 8;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0};
+    };
+    output_times={8};
+    output_volume={8};
+  },
+  {		// SI EPITAXY
+    process_time= 7;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0};
+    };
+    output_times={7};
+    output_volume={7};
+  },
+  {		// MASK ADDITION
+    model_name="Mask";
+
+    parameters={
+      mask_file = "/assets/mask_periodic.vtk";
+      surface_geometry=false;
+      remove_bottom=false;
+    };
+  },
+  {		// DOUBLE PATTERNING DEPOSITION
+    process_time= 15;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+    };
+    output_volume={0,15};
+  },
+  {		// DOUBLE PATTERNING MASK PATTERNING
+    process_time= 20;
+
+    model_name="ConstantRates";
+    parameters= {
+      directional_rates={-1.0};
+      direction={0,0,-1};
+    };
+    output_volume={20};
+  },
+  {		// REMOVE ORIGINAL MASK
+    model_name="BooleanOperation";
+    parameters= {
+      levelset=0; // use bottom levelset (mask)
+      level=-5; // subtract from all lower ones
+      invert=true;
+      remove_levelset=true;
+      wrap_lower_surface=false;
+    };
+  },
+  {		// ETCH SI/SIGE/SI STACK DIRECTIONALLY
+    process_time= 30;
+
+    model_name="ConstantRates";
+    parameters= {
+      directional_rates={0, -1.0, -1.0, -1.0, -0.5};
+      direction={0,0,-1};
+    };
+    //output_times={10};
+    output_volume={0, 30};
+  },
+  {		// REMOVE DOUBLE PATTERNING MASK
+    model_name="BooleanOperation";
+    parameters= {
+      levelset=4; // use top levelset (DP mask)
+      level=0; // subtract from no layer
+      remove_levelset=true; // just remove the top layer
+      wrap_lower_surface=false;
+    };
+  },
+  {		// DEPOSIT DUMMY GATE MATERIAL
+    process_time= 55;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+    };
+    //output_times={10,20, 50};
+    output_volume={0, 55};
+  },
+  {		// DUMMY GATE CMP
+    model_name="Planarization";
+    parameters={
+      coordinate=80; // height up to which material should be removed
+    };
+  },
+  {		// DUMMY PROCESS FOR OUTPUT
+    process_time= 1;
+    model_name="ConstantRates";
+    parameters= {
+      constant_rates={0};
+    };
+    output_volume={0};
+  },
+  {		// GATE MASK ADDITION
+    model_name="Mask";
+
+    parameters={
+      mask_file = "/assets/single_gate_mask.vtk";
+      surface_geometry=false;
+      remove_bottom=false;
+    };
+  },
+  {		// DUMMY GATE PATTERNING
+    process_time= 90;
+
+    model_name="ConstantRates";
+    parameters= {
+      directional_rates={-1.0};
+      direction={0,0,-1};
+    };
+    //output_times={10,20, 50};
+    output_volume={0, 90};
+  },
+  {		// REMOVE GATE MASK
+    model_name="BooleanOperation";
+    parameters= {
+      levelset=0; // use bottom levelset (gate maks)
+      level=-5; // subtract from all layers
+      invert=true;
+      remove_levelset=true; // just remove the top layer
+      wrap_lower_surface=false;
+    };
+  },
+  {		// SPACER DEPOSITION
+    process_time= 12;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+    };
+    //output_times={10,20, 50};
+    output_volume={0, 5};
+  },
+  {		// SPACER PATTERNING
+    process_time= 35;
+
+    model_name="ConstantRates";
+    parameters= {
+      directional_rates={-1.0};
+      direction={0,0,-1};
+      constant_rates={-0.1};
+    };
+    output_volume={35};
+  },
+  {		// FIN PATTERNING
+    process_time= 20;
+
+    model_name="ConstantRates";
+    parameters= {
+      directional_rates={-0.05,0,-1.0,-1.0,-1.0};
+      direction={0,0,-1};
+      constant_rates={-0.1, -0.05};
+    };
+    output_volume={20};
+  },
+  {		// SOURCE/DRAIN EPITAXY
+    process_time= 11;
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 0, 0, 1.0, 0.1, 1.0, 0};
+    };
+    
+    output_volume={11};
+  },
+  {		// DIELECTRIC DEPOSITION
+    process_time= 35;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,1.0};
+    };
+    //output_times={10,20, 50};
+    output_volume={35};
+  },
+  {		// DIELECTRIC CMP
+    model_name="Planarization";
+    parameters={
+      coordinate=72.5; // height up to which material should be removed
+    };
+  },
+  {		// DUMMY GATE REMOVAL
+    process_time= 80;
+
+    model_name="ConstantRates";
+    parameters= {
+      constant_rates={-0.005,0,0,-1.0};
+    };
+    output_volume={0,80};
+  },
+  {		// DELETE DUMMY GATE MATERIAL
+    model_name="BooleanOperation";
+    parameters= {
+      levelset=4; // use dummy gate levelset
+      level=0; // subtract from no layer
+      remove_levelset=true; // just remove the layer
+      wrap_lower_surface=false;
+    };
+  },
+  {		// ETCH SIGE INTERLAYER
+    process_time= 10;
+
+    model_name="ConstantRates";
+    parameters= {
+      constant_rates={0,0,0,-0.05,-1.0,-0.05,-0.65};
+    };
+    output_volume={10};
+  },
+  {		// DELETE SIGE MATERIAL LAYER
+    model_name="BooleanOperation";
+    parameters= {
+      levelset=2; // use dummy gate levelset
+      level=0; // subtract from no layer
+      remove_levelset=true; // just remove the layer
+      wrap_lower_surface=false;
+    };
+  },
+  {		// GATE DIELECTRIC DEPOSITION
+    process_time= 2;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+    };
+    output_volume={2};
+  },
+  {		// GATE METAL DEPOSITION
+    process_time= 4;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+    };
+    output_volume={4};
+  },
+  {		// GATE CONTACT DEPOSITION
+    process_time= 20;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+    };
+    output_volume={20};
+  },
+  {		// GATE CMP
+    model_name="Planarization";
+    parameters={
+      coordinate=47.5; // height up to which material should be removed
+    };
+  },
+  {		// DUMMY PROCESS FOR OUTPUT
+    process_time= 1;
+    model_name="ConstantRates";
+    parameters= {
+      constant_rates={0};
+    };
+    output_volume={0};
+  }
+  
+};

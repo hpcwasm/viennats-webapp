@@ -1,6 +1,12 @@
 {
     "examples": [
         {
+            "value": "./assets/simulations/par_NanoSheet.txt",
+            "viewValue": "NanoSheet 3D",
+            "imagepath": "./assets/simulations/parwasm_NanoSheet.png",
+            "description": "This is a short description of this simulation."
+        },
+        {
             "value": "./assets/simulations/parwasm_Deposition2D.txt",
             "viewValue": "Deposition 2D",
             "imagepath": "./assets/simulations/parwasm_Deposition2D.png",
@@ -15,7 +21,7 @@
         {
             "value": "./assets/simulations/parwasm_Deposition2D_volume2.txt",
             "viewValue": "Deposition 2D (V2)",
-            "imagepath": "./assets/simulations/parwasm_Deposition2D.png",
+            "imagepath": "./assets/simulations/parwasm_Deposition2D_volume2.png",
             "description": "This is a short description of this simulation."
         },               
         {

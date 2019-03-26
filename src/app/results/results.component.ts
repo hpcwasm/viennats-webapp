@@ -1,8 +1,12 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FileSaverService} from 'ngx-filesaver';
 import {encode} from 'punycode';
 import {Subscription} from 'rxjs';
 import {FieldDataTypes} from 'vtk.js/Sources/Common/DataModel/DataSet/Constants';
 import {AttributeTypes} from 'vtk.js/Sources/Common/DataModel/DataSetAttributes/Constants';
+import vtkPlane from 'vtk.js/Sources/Common/DataModel/Plane';
+import vtkSphere from 'vtk.js/Sources/Common/DataModel/Sphere';
+import vtkCutter from 'vtk.js/Sources/Filters/Core/Cutter';
 import vtkCalculator from 'vtk.js/Sources/Filters/General/Calculator';
 import vtkConeSource from 'vtk.js/Sources/Filters/Sources/ConeSource';
 import vtkXMLPolyDataReader from 'vtk.js/Sources/IO/XML/XMLPolyDataReader';
@@ -13,15 +17,13 @@ import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';
 import vtkFullScreenRenderWindow from 'vtk.js/Sources/Rendering/Misc/FullScreenRenderWindow';
 import vtkGenericRenderWindow from 'vtk.js/Sources/Rendering/Misc/GenericRenderWindow';
 
-import {FileSaverService} from 'ngx-filesaver';
-
 import {WebworkerService} from '../services/webworker/webworker.service';
 
 // class File {
 //   constructor(public filepath: string, public selected: boolean){}
 // }
 class Color {
-  constructor(public R: number, public G:number, public B:number){}
+  constructor(public R: number, public G: number, public B: number) {}
 }
 
 @Component({
@@ -39,20 +41,22 @@ export class ResultsComponent implements OnInit, OnDestroy {
   conesource: any;
   mapper: any;
   actor: any;
-
+  renderbounds: any = [0, 30, 0, 50, 7, 30];
   redcolor: Color;
 
   // props: any;
   subscription: Subscription;
   subscriptionResulstCleared: Subscription;
 
-  constructor(public webworkerService: WebworkerService, private fileSaverService: FileSaverService) {
+  constructor(
+      public webworkerService: WebworkerService,
+      private fileSaverService: FileSaverService) {
     // this.files.push(new File("Filenam1", false));
     // this.files.push(new File("Filenam2", false ));
     // this.files.push(new File("Filenam3", true));
     // this.files.push(new File("Filenam4", false));
     // this.tucolor = new Color(0,102,153);
-    this.redcolor = new Color(255/255,0,0);
+    this.redcolor = new Color(255 / 255, 0, 0);
     this.subscription =
         this.webworkerService.getNewResults().subscribe(message => {
           this.renderResult(message.index);
@@ -102,45 +106,74 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   // listen on event of new result ready
   renderResult(index: number) {
-    if (index >0){
-      if (this.webworkerService.results[index].selected == true)
-        {
-          this.changeVisibility(index-1);
-        }
+    if (index > 0) {
+      if (this.webworkerService.results[index].selected == true) {
+        this.changeVisibility(index - 1);
+      }
     }
     const encoder = new TextEncoder();
     const buffer = encoder.encode(this.webworkerService.results[index].vtkfile);
     var vtpReader = vtkXMLPolyDataReader.newInstance();
     vtpReader.parseAsArrayBuffer(buffer);
     var polydata = vtpReader.getOutputData(0);
-    var mapper = vtkMapper.newInstance({scalarVisibility: true, scalarRange: [0, 10]});
+
+
+    var mapper =
+        vtkMapper.newInstance({scalarVisibility: true, scalarRange: [0, 10]});
     // var actor = vtkActor.newInstance();
 
-    if (this.webworkerService.results[index].filename.includes('Hull'))
-    {
+    if (this.webworkerService.results[index].filename.includes('Hull')) {
+      if (false) {
+        var bounds = polydata.getBounds();
+        console.log('########## bounds ');
+        console.log(bounds);
+        var normal = [0, 1, 0];
+        var center = [
+          (bounds[1] - bounds[0]) / 2.0, (bounds[3] - bounds[2]) / 2.0,
+          (bounds[5] - bounds[4]) / 2.0
+        ];
+        console.log('########## center ');
+        console.log(center);
+        var plane = vtkPlane.newInstance({origin: center, normal: normal});
+        var sphere = vtkSphere.newInstance({center: center, radius: 100});
+        var cutter = vtkCutter.newInstance();
+        cutter.setCutFunction(plane);
+
+        cutter.setInputConnection(vtpReader.getOutputPort());
+        mapper.setInputConnection(cutter.getOutputPort());
+        mapper.setScalarModeToUseCellData();
+        // console.log("########## polydata.getCellData()");
+        // console.log(polydata.getCellData().getScalars().getNumberOfValues());
+        // console.log(polydata.getCellData().getScalars().getData());
+      }
       mapper.setScalarModeToUseCellData();
-      // console.log("########## polydata.getCellData()");
-      // console.log(polydata.getCellData().getScalars().getNumberOfValues());
-      // console.log(polydata.getCellData().getScalars().getData());
+      mapper.setInputData(polydata);
+    } else if (this.webworkerService.results[index].filename.includes(
+                   'Interface')) {
+      mapper.setInputData(polydata);
+
+    } else {
+      throw '############ unknown geometry extension'
     }
 
+
     this.webworkerService.results[index].actor.setMapper(mapper);
-    // this.webworkerService.results[index].actor.getProperty().setColor(1, 0, 0);
-    this.webworkerService.results[index].actor.getProperty().setColor(this.redcolor.R,this.redcolor.G,this.redcolor.B);
-    mapper.setInputData(polydata);
+    // this.webworkerService.results[index].actor.getProperty().setColor(1, 0,
+    // 0);
+    this.webworkerService.results[index].actor.getProperty().setColor(
+        this.redcolor.R, this.redcolor.G, this.redcolor.B);
+
     this.renderer.addActor(this.webworkerService.results[index].actor);
-    if (index == 0){
-    this.renderer.resetCamera();
+    if (index == 0) {
+      this.renderer.resetCamera();
     }
     this.renderWindow.render();
     let props = this.renderer.getViewProps();
-    if (props.length !== this.webworkerService.results.length)
-    {
-      console.error("length of results and viewer actors doesnt match!");
-    console.log(props.length);
-    console.log(this.webworkerService.results.length);
+    if (props.length !== this.webworkerService.results.length) {
+      console.error('length of results and viewer actors doesnt match!');
+      console.log(props.length);
+      console.log(this.webworkerService.results.length);
     }
-
   }
 
   selectall() {
@@ -167,7 +200,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // this.renderer.resetCamera();
   }
 
-  resetCamera(){
+  resetCamera() {
     this.renderer.resetCamera();
     this.renderWindow.render();
     this.renderer.resetCamera();
@@ -194,12 +227,15 @@ export class ResultsComponent implements OnInit, OnDestroy {
     }
     this.renderWindow.render();
     // this.renderer.resetCamera();
-
   }
 
-  downloadResult(idx: number){
-    console.log("############ download: " + this.webworkerService.results[idx].filename);
-    var blob = new Blob([this.webworkerService.results[idx].vtkfile], {type : "text/plain"});
-    this.fileSaverService.save(blob, this.webworkerService.results[idx].filename);
+  downloadResult(idx: number) {
+    console.log(
+        '############ download: ' +
+        this.webworkerService.results[idx].filename);
+    var blob = new Blob(
+        [this.webworkerService.results[idx].vtkfile], {type: 'text/plain'});
+    this.fileSaverService.save(
+        blob, this.webworkerService.results[idx].filename);
   }
 }
