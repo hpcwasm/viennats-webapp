@@ -123,17 +123,24 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // var actor = vtkActor.newInstance();
 
     if (this.webworkerService.results[index].filename.includes('Hull')) {
-      if (true) {
-        var bounds = polydata.getBounds();
-        console.log('########## bounds ');
-        console.log(bounds);
-        var normal = [0, 1, 0];
-        var center = [
-          (bounds[1] - bounds[0]) / 2.0, (bounds[3] - bounds[2]) / 2.0,
-          (bounds[5] - bounds[4]) / 2.0
-        ];
-        console.log('########## center ');
-        console.log(center);
+     
+      console.log('########## bounds ');
+      var bounds = polydata.getBounds();
+      console.log(bounds);
+      var normal = [0, 1, 0];
+      var center = [
+        (bounds[1] - bounds[0]) / 2.0, (bounds[3] - bounds[2]) / 2.0,
+        (bounds[5] - bounds[4]) / 2.0
+      ];
+      console.log('########## center ');
+      console.log(center);
+
+       // check if we have 2D or 3D results
+      const maxb =  Math.max(...center);
+      const minb =  Math.min(...center);
+      if (Math.abs(maxb/minb)< 1000) {
+        
+
         var plane = vtkPlane.newInstance({origin: center, normal: normal});
         var sphere = vtkSphere.newInstance({center: center, radius: 100});
         var cutter = vtkCutter.newInstance();
@@ -151,6 +158,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
       }
     } else if (this.webworkerService.results[index].filename.includes(
                    'Interface')) {
+      mapper.setScalarModeToUseCellData();
       mapper.setInputData(polydata);
 
     } else {
