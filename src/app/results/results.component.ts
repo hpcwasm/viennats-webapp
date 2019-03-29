@@ -123,7 +123,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // var actor = vtkActor.newInstance();
 
     if (this.webworkerService.results[index].filename.includes('Hull')) {
-      if (false) {
+      if (true) {
         var bounds = polydata.getBounds();
         console.log('########## bounds ');
         console.log(bounds);
@@ -145,9 +145,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
         // console.log("########## polydata.getCellData()");
         // console.log(polydata.getCellData().getScalars().getNumberOfValues());
         // console.log(polydata.getCellData().getScalars().getData());
+      } else {
+        mapper.setScalarModeToUseCellData();
+        mapper.setInputData(polydata);
       }
-      mapper.setScalarModeToUseCellData();
-      mapper.setInputData(polydata);
     } else if (this.webworkerService.results[index].filename.includes(
                    'Interface')) {
       mapper.setInputData(polydata);
