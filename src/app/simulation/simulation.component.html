@@ -1,6 +1,6 @@
 <mat-accordion [multi]="true">
 
-  <!-- Parameters --> 
+  <!-- Parameters -->
   <mat-expansion-panel expanded="false">
     <mat-expansion-panel-header>
       <mat-panel-title fxFlex="100px">
@@ -14,13 +14,18 @@
   </mat-expansion-panel>
 
   <!-- Simulation -->
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel expanded="false">
     <mat-expansion-panel-header>
-      <mat-panel-title fxFlex="100px">
+      <mat-panel-title fxFlex="100px" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
         Simulation
       </mat-panel-title>
-      <mat-panel-description>
-          Status of simulation engine: <div [style.color]="webworkerService.getStatusColor(webworkerService.status)"> &nbsp;{{webworkerService.status}}</div>
+      <mat-panel-description fxLayout="row" fxFlex fxLayoutAlign="start center" fxLayoutGap="10px">
+          <button mat-flat-button color="primary" [disabled]="webworkerService.status == 'running' || webworkerService.status ==  'initializing' ||  webworkerService.status ==  'exception' " (click)="startSimulation();$event.stopPropagation();" matTooltip="Start simulation using parameters defined above">Start</button>
+          <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'" (click)="terminateSimulation();$event.stopPropagation();">terminate/respawn</button>
+        <div fxLayout="row">
+        <div [style.color]="webworkerService.getStatusColor(webworkerService.status)">
+            &nbsp;{{webworkerService.status}}</div>
+        </div>
         <!-- Start/stop simulation and view console output -->
       </mat-panel-description>
     </mat-expansion-panel-header>
@@ -28,13 +33,13 @@
   </mat-expansion-panel>
 
   <!-- results -->
-  <mat-expansion-panel expanded="false">
+  <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title fxFlex="100px">
         Results Viewer
       </mat-panel-title>
       <mat-panel-description>
-        Current number of results: {{this.webworkerService.results.length}}
+        Current number of outputs: {{this.webworkerService.results.length}}
       </mat-panel-description>
     </mat-expansion-panel-header>
     <app-results></app-results>

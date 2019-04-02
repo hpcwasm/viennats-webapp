@@ -6,8 +6,11 @@
         <mat-progress-bar class="example-margin" [color]="color" [mode]="mode" [value]="value" [bufferValue]="bufferValue">
         </mat-progress-bar> -->
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-            <button mat-flat-button color="primary" [disabled]="webworkerService.status == 'running' || webworkerService.status ==  'initializing' ||  webworkerService.status ==  'exception' " (click)="startSimulation()" matTooltip="Start simulation using parameters defined above">Start</button>
-            <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'" (click)="terminateSimulation()">terminate/respawn</button>
+            <div>Status of C++ simulation engine:</div>
+            <div [style.color]="webworkerService.getStatusColor(webworkerService.status)">
+                &nbsp;{{webworkerService.status}}</div>
+            <!-- <button mat-flat-button color="primary" [disabled]="webworkerService.status == 'running' || webworkerService.status ==  'initializing' ||  webworkerService.status ==  'exception' " (click)="startSimulation()" matTooltip="Start simulation using parameters defined above">Start</button>
+            <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'" (click)="terminateSimulation()">terminate/respawn</button> -->
             <!-- <mat-hint>status: {{webworkerService.status}}</mat-hint> -->
         </div>
     </div>

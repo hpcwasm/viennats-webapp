@@ -41,6 +41,8 @@ import {SimulationComponent} from './simulation/simulation.component';
 import {SimulationstatusComponent} from './simulationstatus/simulationstatus.component';
 import { CancelsimComponent } from './cancelsim/cancelsim.component';
 import { NosupportComponent } from './nosupport/nosupport.component';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatRadioModule} from '@angular/material/radio';
 
 import { FileSaverModule } from 'ngx-filesaver';
 
@@ -68,8 +70,8 @@ import { FileSaverModule } from 'ngx-filesaver';
     NoopAnimationsModule,
     MatIconModule, MatToolbarModule, MatInputModule, MatFormFieldModule, MatBadgeModule, 
     MatExpansionModule, BrowserModule, AppRoutingModule, MatMenuModule,
-    MatButtonModule, MatTooltipModule, MatSnackBarModule, MatCardModule, MatDialogModule,
-    MatListModule, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule,
+    MatButtonModule, MatTooltipModule, MatSliderModule, MatSnackBarModule, MatCardModule, MatDialogModule,
+    MatListModule, MatPaginatorModule, MatRadioModule, MatProgressSpinnerModule, MatSortModule,
     MatGridListModule, MatCheckboxModule, MatTabsModule, MatSelectModule,
     MatDividerModule, MatTableModule, MatProgressBarModule, FormsModule,
     HttpClientModule, CodemirrorModule, DeviceDetectorModule.forRoot(),

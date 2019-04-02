@@ -38,15 +38,86 @@ export class ResultsComponent implements OnInit, OnDestroy {
   fullScreenRenderer: any;
   renderer: any;
   renderWindow: any;
-  conesource: any;
-  mapper: any;
-  actor: any;
-  renderbounds: any = [0, 30, 0, 50, 7, 30];
   redcolor: Color;
 
   // props: any;
   subscription: Subscription;
   subscriptionResulstCleared: Subscription;
+
+  // clipping
+  activeClipDir: string = 'x';
+  clipdirs: string[] = ['x', 'y'];
+  activeClipValue: any = 50;
+  centerOff: any = [0, 0, 0];
+
+  updateClip(){
+    this.displayOutput(this.activeResultsIndex);
+  }
+
+  makeCutPlane(clipdir: string, clipValue: number, bounds: number[]) {
+    var domsize = [
+      (bounds[1] - bounds[0]), (bounds[3] - bounds[2]), (bounds[5] - bounds[4])
+    ];
+    console.log('########## domsize ');
+    console.log(domsize);
+    if (clipdir == 'x') {
+      var clipvalnorm = clipValue / 100.0;
+      var normal = [0, 1, 0];
+      var center = [bounds[1], bounds[3] - domsize[1] * clipvalnorm, bounds[5]];
+    }
+    if (clipdir == 'y') {
+      var clipvalnorm = clipValue / 100.0;
+      var normal = [1, 0, 0];
+      var center = [bounds[1] - domsize[0] * clipvalnorm, bounds[3], bounds[5]];      
+
+    }
+    console.log(normal);
+    console.log(center);
+    console.log(clipValue);
+    console.log(clipvalnorm);
+    return {origin: center, normal: normal};
+  }
+
+
+  // results player
+  has3Dresults: boolean = false;
+  playing: boolean = true;
+  activeResultsIndex = undefined;
+  togglePlay() {
+    if (this.activeResultsIndex != undefined) {
+      if (!this.playing) {
+        this.activeResultsIndex = this.webworkerService.results.length - 1;
+        this.playing = true;
+        this.displayOutput(this.activeResultsIndex);
+      } else {
+        this.playing = false;
+      }
+    }
+  }
+  showPrev() {
+    if (this.activeResultsIndex != undefined) {
+      this.activeResultsIndex =
+          this.activeResultsIndex > 0 ? this.activeResultsIndex - 1 : 0;
+      this.playing = false;
+      this.displayOutput(this.activeResultsIndex);
+      this.renderWindow.render();
+    }
+  }
+  showNext() {
+    if (this.activeResultsIndex != undefined) {
+      this.activeResultsIndex =
+          this.webworkerService.results.length - 1 > this.activeResultsIndex ?
+          this.activeResultsIndex + 1 :
+          this.webworkerService.results.length - 1;
+      this.playing = false;
+      this.displayOutput(this.activeResultsIndex);
+      this.renderWindow.render();
+    }
+  }
+
+  formatLabel(value: number) {
+    return (value / 100.0);
+  }
 
   constructor(
       public webworkerService: WebworkerService,
@@ -59,7 +130,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.redcolor = new Color(255 / 255, 0, 0);
     this.subscription =
         this.webworkerService.getNewResults().subscribe(message => {
-          this.renderResult(message.index);
+          // this.renderResult(message.index);
+          this.renderResultPlayer(message.index);
         });
     this.subscriptionResulstCleared =
         this.webworkerService.getResulstCleared().subscribe(message => {
@@ -72,6 +144,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // this.props = this.renderer.getViewProps();
     this.renderWindow.render();
     this.renderer.resetCamera();
+    this.has3Dresults = false;
+    this.playing = true;
+    this.activeResultsIndex = undefined;
   }
 
   initRenderWindow() {
@@ -104,109 +179,80 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // console.log(props);
   }
 
-  // listen on event of new result ready
-  renderResult(index: number) {
-    if (index > 0) {
-      if (this.webworkerService.results[index].selected == true) {
-        this.changeVisibility(index - 1);
-      }
-    }
+
+  renderResultPlayer(index: number) {
     const encoder = new TextEncoder();
     const buffer = encoder.encode(this.webworkerService.results[index].vtkfile);
     var vtpReader = vtkXMLPolyDataReader.newInstance();
     vtpReader.parseAsArrayBuffer(buffer);
     var polydata = vtpReader.getOutputData(0);
-
-
     var mapper =
-        vtkMapper.newInstance({scalarVisibility: true, scalarRange: [0, 10]});
-    // var actor = vtkActor.newInstance();
+        vtkMapper.newInstance({scalarVisibility: true, scalarRange: [0, 13]});
 
-    if (this.webworkerService.results[index].filename.includes('Hull')) {
-     
-      console.log('########## bounds ');
-      var bounds = polydata.getBounds();
-      console.log(bounds);
-      var normal = [0, 1, 0];
-      var center = [
-        (bounds[1] - bounds[0]) / 2.0, (bounds[3] - bounds[2]) / 2.0,
-        (bounds[5] - bounds[4]) / 2.0
+    console.log('########## bounds ');
+    var bounds = polydata.getBounds();
+    this.webworkerService.results[index].bounds = bounds;
+    console.log(bounds);
+    var normal = [0, 1, 0];
+
+    console.log('########## center ');
+    var center = [
+      (bounds[1] - bounds[0]) / 2.0, (bounds[3] - bounds[2]) / 2.0,
+      (bounds[5] - bounds[4]) / 2.0
+    ];
+    console.log(center);
+    const maxb = Math.max(...center);
+    const minb = Math.min(...center);
+
+    if (Math.abs(maxb / minb) < 1000) {  // 3D results
+      this.has3Dresults = true;
+      var cuttingplane = [
+        center[0] + this.centerOff[0], center[1] + this.centerOff[1],
+        center[2] + this.centerOff[2]
       ];
-      console.log('########## center ');
-      console.log(center);
 
-       // check if we have 2D or 3D results
-      const maxb =  Math.max(...center);
-      const minb =  Math.min(...center);
-      if (Math.abs(maxb/minb)< 1000) {
-        
+      var tmp =
+          this.makeCutPlane(this.activeClipDir, this.activeClipValue, bounds);
+      this.webworkerService.results[index].cliporg = tmp.origin;
+      this.webworkerService.results[index].clipnorm = tmp.normal;
+      var plane =
+          vtkPlane.newInstance({origin: tmp.origin, normal: tmp.normal});
+      this.webworkerService.results[index].clipplane = plane;          
+      console.log('########## cutplane ');
+      console.log(plane);
+      console.log(this.webworkerService.results[index].cliporg);
+      console.log(this.webworkerService.results[index].clipnorm);
 
-        var plane = vtkPlane.newInstance({origin: center, normal: normal});
-        var sphere = vtkSphere.newInstance({center: center, radius: 100});
-        var cutter = vtkCutter.newInstance();
-        cutter.setCutFunction(plane);
-
-        cutter.setInputConnection(vtpReader.getOutputPort());
-        mapper.setInputConnection(cutter.getOutputPort());
-        mapper.setScalarModeToUseCellData();
-        // console.log("########## polydata.getCellData()");
-        // console.log(polydata.getCellData().getScalars().getNumberOfValues());
-        // console.log(polydata.getCellData().getScalars().getData());
-      } else {
-        mapper.setScalarModeToUseCellData();
-        mapper.setInputData(polydata);
-      }
-    } else if (this.webworkerService.results[index].filename.includes(
-                   'Interface')) {
+      this.webworkerService.results[index].cutter.setCutFunction(plane);
+      this.webworkerService.results[index].cutter.setInputConnection(
+          vtpReader.getOutputPort());
+      mapper.setInputConnection(
+          this.webworkerService.results[index].cutter.getOutputPort());
+      mapper.setScalarModeToUseCellData();
+    } else {  // 2D results
+      this.has3Dresults = false;
       mapper.setScalarModeToUseCellData();
       mapper.setInputData(polydata);
-
-    } else {
-      throw '############ unknown geometry extension'
     }
 
 
     this.webworkerService.results[index].actor.setMapper(mapper);
-    // this.webworkerService.results[index].actor.getProperty().setColor(1, 0,
-    // 0);
-    this.webworkerService.results[index].actor.getProperty().setColor(
-        this.redcolor.R, this.redcolor.G, this.redcolor.B);
-
     this.renderer.addActor(this.webworkerService.results[index].actor);
+
     if (index == 0) {
       this.renderer.resetCamera();
     }
-    this.renderWindow.render();
-    let props = this.renderer.getViewProps();
-    if (props.length !== this.webworkerService.results.length) {
-      console.error('length of results and viewer actors doesnt match!');
-      console.log(props.length);
-      console.log(this.webworkerService.results.length);
-    }
-  }
 
-  selectall() {
     let props = this.renderer.getViewProps();
-    let idx = 0;
-    for (let file of this.webworkerService.results) {
-      file.selected = true;
-      props[idx].setVisibility(true);
-      idx = idx + 1;
+    if (this.playing || this.activeResultsIndex == undefined) {
+      this.playing = true;
+      this.activeResultsIndex = this.webworkerService.results.length - 1;
+      // make new results visible
+      this.displayOutput(this.activeResultsIndex);
+      console.log('########## this.playing || this.activeResultsIndex == undefined ');
+    } else {
+      // nothing to update
     }
-    this.renderWindow.render();
-    this.renderer.resetCamera();
-  }
-
-  deselectall() {
-    let props = this.renderer.getViewProps();
-    let idx = 0;
-    for (let file of this.webworkerService.results) {
-      file.selected = false;
-      props[idx].setVisibility(false);
-      idx = idx + 1;
-    }
-    this.renderWindow.render();
-    // this.renderer.resetCamera();
   }
 
   resetCamera() {
@@ -221,21 +267,47 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.subscriptionResulstCleared.unsubscribe();
   }
 
-  changeVisibility(idx: number) {
+  displayOutput(idx: number) {
     let props = this.renderer.getViewProps();
-    // console.log('changeVisibility ' + idx);
-    console.log(this.webworkerService.results[idx].selected);
-    if (this.webworkerService.results[idx].selected == true) {
-      // console.log('turnon ' + idx);
-      this.webworkerService.results[idx].selected = false;
-      props[idx].setVisibility(false);
-    } else if (this.webworkerService.results[idx].selected == false) {
-      // console.log('turnoff ' + idx);
-      this.webworkerService.results[idx].selected = true;
-      props[idx].setVisibility(true);
+
+    let i = 0;
+    for (let file of this.webworkerService.results) {
+      props[i].setVisibility(false);
+      i = i + 1;
     }
+    props[idx].setVisibility(true);
+
+    if (this.has3Dresults) {
+      // change cutting if it has changed
+      var activeclip = this.makeCutPlane(
+          this.activeClipDir, this.activeClipValue,
+          this.webworkerService.results[idx].bounds);
+      for (var k = 0; k != 3; ++k) {
+        if (this.webworkerService.results[idx].cliporg[k] !=
+                activeclip.origin[k] ||
+            this.webworkerService.results[idx].clipnorm[k] !=
+                activeclip.normal[k]) {
+          // set new vtkplane
+          this.webworkerService.results[idx].cliporg = activeclip.origin;
+          this.webworkerService.results[idx].clipnorm = activeclip.normal;
+          this.webworkerService.results[idx].clipplane.setOrigin(activeclip.origin);
+          this.webworkerService.results[idx].clipplane.setNormal(activeclip.normal);
+          console.log('########## new cutplane ');
+          // console.log(plane);
+          this.renderWindow.render();
+          return;
+        }
+      }
+    }
+
     this.renderWindow.render();
-    // this.renderer.resetCamera();
+
+    // TODO HERE
+
+    // console.log(
+    //     '########################
+    //     this.webworkerService.results[idx].cutter');
+    // console.log(this.webworkerService.results[idx].cutter);
   }
 
   downloadResult(idx: number) {

@@ -15,5 +15,14 @@ export class SimulationComponent implements OnInit {
 
   constructor(public webworkerService: WebworkerService) {}
 
+  startSimulation(){
+    // console.log("not yet implemented");
+    this.webworkerService.startSimulation();
+  }
+  terminateSimulation(){
+    this.webworkerService.respawnSimulation();
+    // this.closeSnackBar();
+  }  
+
   ngOnInit() {}
 }

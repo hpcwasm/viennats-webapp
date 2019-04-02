@@ -3,30 +3,82 @@
   <div>vtkviewer</div>
 </div> -->
 
-<div fxLayout="row" fxLayout.xs="column" fxLayoutGap="20px"  fxLayout.sm="column" fxLayoutGap.md="20px" fxLayoutGap.xs="20px" fxLayoutGap.sm="20px"
-  fxLayoutAlign="start start">
-  <div fxLayout="column" >
-    <div fxLayout="row" >
-    <div fxFlex="0 0 450px"  fxFlex.md="0 0 450px" fxFlex.sm="0 0 450px" fxFlex.xs="0 0 350px" style="border: 1px dashed grey" #vtkview></div>
-  </div>
+<div fxLayout="row" fxLayout.xs="column" fxLayoutGap="20px" fxLayout.sm="column" fxLayoutGap.md="20px" fxLayoutGap.xs="20px"
+  fxLayoutGap.sm="20px" fxLayoutAlign="start start">
+  <div fxLayout="column">
+    <div fxLayout="row">
+      <div fxFlex="0 0 450px" fxFlex.md="0 0 450px" fxFlex.sm="0 0 450px" fxFlex.xs="0 0 350px" style="border: 1px dashed grey"
+        #vtkview></div>
+    </div>
     <div>Left Mouse: rotate, Left Mouse + Shift: pan, Scroll: zoom</div>
   </div>
   <div fxLayout="column">
-    <div>
-      <div fxLayout="row" fxLayoutGap="20px">
-        <div fxLayout="column">
-          <button mat-stroked-button (click)="selectall()">Select all</button>
-          <button mat-stroked-button (click)="deselectall()">Deselect all</button>
+    <div fxLayoutAlign="center start">
+      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center start">
+        <div fxLayout="column" fxLayoutGap="20px">
+
+          <!-- <button mat-stroked-button (click)="selectall()">Select all</button> -->
+          <!-- <button mat-stroked-button (click)="deselectall()">Deselect all</button> -->
           <button mat-stroked-button (click)="resetCamera()">Recenter camera</button>
-        </div>
-        <div fxLayout="column">
-          <div class="list-container" >
-            <div *ngIf="this.webworkerService.results.length == 0">No results available. Intermediate results will be
-              loaded here during the simulation.</div>
-            <mat-list-item role="listitem" *ngFor="let file  of this.webworkerService.results;  index as i">
-              <mat-checkbox [(checked)]="this.webworkerService.results[this.webworkerService.results.length-i-1].selected" (change)="changeVisibility(this.webworkerService.results.length-i-1)">{{this.webworkerService.results[this.webworkerService.results.length-i-1].filename}} </mat-checkbox><mat-icon (click)="downloadResult(this.webworkerService.results.length-i-1)" svgIcon="mydownload"></mat-icon>
-            </mat-list-item>
+
+          <div fxLayout="column" fxLayoutAlign="center center" *ngIf="this.has3Dresults">
+            <div>
+              <label>Clipping Axis</label>
+            </div>
+            <mat-radio-group fxLayout="row" fxLayoutGap="20px" [(ngModel)]="activeClipDir" (change)="updateClip()">
+              <mat-radio-button color="primary" *ngFor="let clipdir of clipdirs" [value]="clipdir">
+                {{clipdir}}
+              </mat-radio-button>
+            </mat-radio-group>
+            <mat-slider color="primary"  tickInterval="1" [(ngModel)]="activeClipValue" (change)="updateClip()"
+                min="1" max="101"></mat-slider>            
           </div>
+
+
+          <!-- <div *ngIf="this.has3Dresults" fxLayout="column">
+            <div>Clip Results:</div>
+            <div fxLayout="row">
+              <mat-slider color="primary" [displayWith]="formatLabel" thumbLabel vertical tickInterval="1" [(ngModel)]="centerOff[0]"
+                min="0" max="100">ddd</mat-slider>
+              <mat-slider color="primary" [displayWith]="formatLabel" thumbLabel vertical tickInterval="1" [(ngModel)]="centerOff[1]"
+                min="0" max="100"></mat-slider>
+              <mat-slider color="primary" [displayWith]="formatLabel" thumbLabel vertical tickInterval="1" [(ngModel)]="centerOff[2]"
+                min="0" max="100"></mat-slider>
+            </div>
+          </div> -->
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <!-- <div class="list-container"> -->
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <button mat-icon-button>
+              <mat-icon svgIcon="myprev" (click)="showPrev()"></mat-icon>
+            </button>
+            <!-- <div>Resuts </div> -->
+            <button *ngIf="this.playing" mat-button> Output {{activeResultsIndex != undefined ? activeResultsIndex
+              :"-"}}/{{webworkerService.results.length > 0 ? webworkerService.results.length-1 : "-" }}<mat-icon
+                svgIcon="mypause" (click)="togglePlay()"></mat-icon></button>
+            <button *ngIf="!this.playing" mat-button>Output {{activeResultsIndex != undefined ? activeResultsIndex
+              :"-"}}/{{webworkerService.results.length > 0 ? webworkerService.results.length-1 : "-" }}<mat-icon
+                svgIcon="myplay" (click)="togglePlay()"></mat-icon></button>
+            <button mat-icon-button>
+              <mat-icon svgIcon="mynext" (click)="showNext()"></mat-icon>
+            </button>
+          </div>
+          <div *ngIf="this.webworkerService.results.length == 0">
+            No outputs available. Intermediate results will be loaded here during the simulation.
+          </div>
+          <div *ngIf="this.webworkerService.results.length != 0" fxLayout="row" fxLayoutAlign="center center">
+            <div>{{this.webworkerService.results[activeResultsIndex].filename}}</div>
+            <mat-icon (click)="downloadResult(activeResultsIndex)" svgIcon="mydownload"></mat-icon>
+          </div>
+          <!-- <mat-list-item fxLayoutAlign="center center" role="listitem" *ngFor="let file  of this.webworkerService.results;  index as i">
+            <mat-checkbox color="primary" [(checked)]="this.webworkerService.results[this.webworkerService.results.length-i-1].selected"
+              (change)="changeVisibility(this.webworkerService.results.length-i-1)">{{this.webworkerService.results[this.webworkerService.results.length-i-1].filename}}
+            </mat-checkbox>
+            <mat-icon (click)="downloadResult(this.webworkerService.results.length-i-1)" svgIcon="mydownload"></mat-icon>
+          </mat-list-item> -->
+
+          <!-- </div> -->
         </div>
       </div>
     </div>

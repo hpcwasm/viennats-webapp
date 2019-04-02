@@ -3,7 +3,8 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {ResultsComponent} from 'src/app/results/results.component';
 import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
-
+import vtkCutter from 'vtk.js/Sources/Filters/Core/Cutter';
+import vtkPlane from 'vtk.js/Sources/Common/DataModel/Plane';
 
 export interface ParFile {
   value: string;
@@ -17,8 +18,8 @@ class ParFileClass implements ParFile{
 
 export class Result {
   constructor(
-      public vtkfile: string, public filename: string, public selected: boolean,
-      public actor: vtkActor) {}
+      public vtkfile: string, public filename: string, public cutter: vtkCutter,
+      public actor: vtkActor,public bounds: number[], public cliporg: number[],public clipnorm: number[], public clipplane: vtkPlane) {}
 }
 
 
@@ -177,13 +178,13 @@ export class WebworkerService {
         this.status = 'idle';
         this.simulationFinished.next(true);
       } else if (data.data.fileready === true) {
-        if (data.data.filename.endsWith('.vtp')) {
+        if (data.data.filename.endsWith('.vtp') && data.data.filename.includes('Hull')) {
           console.log(
               '(main) message received: fileready, file=' + data.data.filename);
           let filenameonly = data.data.filename.replace(/^.*[\\\/]/, '');
           this.results.push(new Result(
-              data.data.filecontent, filenameonly, true,
-              vtkActor.newInstance()));
+              data.data.filecontent, filenameonly, vtkCutter.newInstance(),
+              vtkActor.newInstance(),undefined,undefined,undefined,vtkPlane.newInstance()));
           this.resultReady.next(this.results.length-1);
           console.log(this.results.length-1)
           this.sendNewResult(this.results.length-1);
