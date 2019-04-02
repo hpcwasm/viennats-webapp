@@ -11,21 +11,21 @@
 
     <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-evenly center">
       <div fxLayout="row wrap" fxLayoutGap="20px grid" fxLayoutAlign="start start">
-        <div *ngFor="let example of webworkerService.parfiles; index as i">
+        <div *ngFor="let example of webworkerService.parfiles; index as idx">
             <!-- <mat-card *ngIf="i<5" class="example-card" > -->
           <mat-card class="example-card" >
             <mat-card-header>
-              <mat-card-title style="margin-left:-20px;">{{example.viewValue}}</mat-card-title>
+              <mat-card-title style="margin-left:-20px;">{{example.title}}</mat-card-title>
               <!-- <mat-card-subtitle>{{example.value}}</mat-card-subtitle> -->
             </mat-card-header>
-            <img mat-card-image  [src]="example.imagepath"  alt="processimage">
+            <img mat-card-image  [src]="webworkerService.getImageFilePath(idx)"  alt="processimage">
             <mat-card-content>
               <p>
                 {{example.description}}
               </p>
             </mat-card-content>
             <mat-card-actions>
-              <button mat-button (click)="runsimulation(example.value)">RUN SIMULATION</button>
+              <button mat-button (click)="runsimulation(idx)">RUN SIMULATION</button>
             </mat-card-actions>
           </mat-card>
         </div>

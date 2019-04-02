@@ -5,10 +5,10 @@
             <div fxLayout="column" fxLayoutAlign="start start">
                 <div fxFlexOffset="20px">
                     <mat-form-field>
-                        <mat-select (selectionChange)="loadfile()" [(ngModel)]="webworkerService.selectedParfile"
+                        <mat-select (selectionChange)="loadsim(webworkerService.selectedIndex)" [(ngModel)]="webworkerService.selectedIndex"
                             placeholder="Select Parameter File">
-                            <mat-option *ngFor="let parfile of webworkerService.parfiles" [value]="parfile.value">
-                                {{parfile.viewValue}}
+                            <mat-option *ngFor="let parfile of webworkerService.parfiles; index as idx" [value]="idx">
+                                {{parfile.title}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>

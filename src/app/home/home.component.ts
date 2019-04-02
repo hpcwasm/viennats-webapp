@@ -19,7 +19,7 @@ export class HomeComponent {
   }
 
 
-  runsimulation(parfilename: string) {
+  runsimulation(simidx: number) {
     // check if simulation is running
     if (this.webworkerService.status == 'running') {
       let dialogRef = this.dialog.open(CancelsimComponent);
@@ -27,12 +27,12 @@ export class HomeComponent {
         if (result == 'abort') {
           this.webworkerService.respawnSimulation();
           this.webworkerService.clearResults();
-          this.webworkerService.selectedParfile = parfilename;
           this.webworkerService.sendClearConsoleLog();
-          this.webworkerService.loadfile(this.webworkerService.selectedParfile);
+          this.webworkerService.loadsim(simidx);
           this.router.navigate(['/simulation']);
         } else if (result == 'continue') {
-          // do nothing
+          // route to running simulation
+          this.router.navigate(['/simulation']);
         } else {
           // NOTE: The result can also be nothing if the user presses the `esc`
           // key or clicks outside the dialog
@@ -40,9 +40,8 @@ export class HomeComponent {
       })
     } else {
       this.webworkerService.clearResults();
-      this.webworkerService.selectedParfile = parfilename;
       this.webworkerService.sendClearConsoleLog();
-      this.webworkerService.loadfile(this.webworkerService.selectedParfile);
+      this.webworkerService.loadsim(simidx);
       this.router.navigate(['/simulation']);
     }
   }

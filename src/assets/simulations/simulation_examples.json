@@ -1,0 +1,21 @@
+{
+    "simulations": [
+        {
+            "prefixpath": "deposition2D",
+            "parfile": "parwasm.txt",
+            "geometries": ["geometry2.dx"],            
+            "title": "Deposition Example",
+            "image": "cover.png",
+            "description": "This is the short description of this simulation."
+        },   
+        {
+            "prefixpath": "stackednanosheet",
+            "parfile": "parwasm.txt",
+            "geometries": ["sio2_periodic.vtk", "mask_periodic.vtk","single_gate_mask.vtk"],
+            "title": "Stacked Nanosheet",
+            "image": "cover.png",
+            "description": "This is the short description of this simulation."
+        }
+   
+    ]
+}

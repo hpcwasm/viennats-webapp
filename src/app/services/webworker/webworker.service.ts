@@ -2,45 +2,61 @@ import {HttpClient} from '@angular/common/http';
 import {EventEmitter, Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {ResultsComponent} from 'src/app/results/results.component';
-import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
-import vtkCutter from 'vtk.js/Sources/Filters/Core/Cutter';
 import vtkPlane from 'vtk.js/Sources/Common/DataModel/Plane';
+import vtkCutter from 'vtk.js/Sources/Filters/Core/Cutter';
+import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
 
 export interface ParFile {
-  value: string;
-  viewValue: string;
-  imagepath: string;
+  prefixpath: string;
+  parfile: string;
+  geometries: string[];
+  title: string;
+  image: string;
   description: string;
+  geoready: boolean;
 }
-class ParFileClass implements ParFile{
-  constructor(public value: string, public viewValue: string, public imagepath: string, public description: string){}
+class ParFileClass implements ParFile {
+  constructor(
+      public prefixpath: string, public parfile: string,
+      public geometries: string[], public title: string, public image: string,
+      public description: string, public geoready: boolean) {}
 }
 
 export class Result {
   constructor(
       public vtkfile: string, public filename: string, public cutter: vtkCutter,
-      public actor: vtkActor,public bounds: number[], public cliporg: number[],public clipnorm: number[], public clipplane: vtkPlane) {}
+      public actor: vtkActor, public bounds: number[], public cliporg: number[],
+      public clipnorm: number[], public clipplane: vtkPlane) {}
 }
 
 
 @Injectable({providedIn: 'root'})
 export class WebworkerService {
   parfiles: ParFile[] = [];
-  // parfiles: ParFile[] = [
-  //   {value: './assets/simulations/parwasm_Deposition2D.txt', viewValue: 'Deposition 2D', imagepath: './assets/simulations/parwasm_Deposition2D.png', description: 'This is a short description of this simulation.'},
-  //   {value: './assets/simulations/parwasm_Deposition3D.txt', viewValue: 'Deposition 3D', imagepath: './assets/simulations/parwasm_Deposition3D.png', description: 'This is a short description of this simulation.'},    
-  //   {value: './assets/simulations/parwasm_SF6_Etching.txt', viewValue: 'SF6 Etching', imagepath: './assets/simulations/parwasm_SF6_Etching.png', description: 'This is a short description of this simulation.'},
-  //   {value: './assets/simulations/parwasm_CFx_Deposition.txt', viewValue: 'CFx Deposition', imagepath: './assets/simulations/parwasm_CFx_Deposition.png', description: 'This is a short description of this simulation.'},
-  //   {value: './assets/simulations/parwasm_TEOS_Deposition.txt', viewValue: 'TEOS Deposition', imagepath: './assets/simulations/parwasm_TEOS_Deposition.png', description: 'This is a short description of this simulation.'},
-  // ];
-  
 
   //  selectedParfile: string = undefined;
-  selectedParfile: string;
+  // selectedParfile: string;
+  selectedSimIdx: number;
+
+  getParfilePath(idx: number) {
+    return './assets/simulations/' + this.parfiles[idx].prefixpath + '/' +
+        this.parfiles[idx].parfile;
+  }
+  getBEPrefix(idx: number) {
+    return './assets/simulations/' + this.parfiles[idx].prefixpath + '/';
+  }  
+  getFSPrefix(idx: number) {
+    return '/simulations/' + this.parfiles[idx].prefixpath + '/';
+
+  }
+  getImageFilePath(idx: number) {
+    return './assets/simulations/' + this.parfiles[idx].prefixpath + '/' + 
+        this.parfiles[idx].image;
+  }  
 
   results: Result[] = [];
 
-  simulationWorkerFilePath: string = './assets/buildwasm/vtsworker.js';
+  simulationWorkerFilePath: string = './assets/js/vtsworker.js';
   simulationWorker: any = undefined;
 
   // other components will depend on this string
@@ -77,20 +93,20 @@ export class WebworkerService {
   // stdoutReady: EventEmitter<any> = new EventEmitter();
 
   constructor(private http: HttpClient) {
-    this.getSimulations().subscribe(data => 
-    {
-      console.log("received database.json");
+    this.getSimulations().subscribe(data => {
+      console.log('received simulation_examples.json');
       console.log(data);
-      for (let example of data.examples) {
-        this.parfiles.push(new ParFileClass(example.value, example.viewValue, example.imagepath, example.description));
+      for (let example of data.simulations) {
+        this.parfiles.push(new ParFileClass(
+            example.prefixpath, example.parfile, example.geometries,
+            example.title, example.image, example.description, false));
       }
-      this.selectedParfile = this.parfiles[0].value;
-      this.loadfile(this.selectedParfile);
+      this.selectedSimIdx = 0;
+      this.loadsim(this.selectedSimIdx);
+
+
       this.initializeSimulation();
-    }
-    );    
-    
-    
+    });
   }
 
   clearResults() {
@@ -105,7 +121,7 @@ export class WebworkerService {
   }
   getResulstCleared(): Observable<any> {
     return this.resultscleared.asObservable();
-  }  
+  }
 
   // clear console log
   private clearConsoleLog = new Subject<any>();
@@ -114,7 +130,7 @@ export class WebworkerService {
   }
   gerClearConsoleLog(): Observable<any> {
     return this.clearConsoleLog.asObservable();
-  }  
+  }
 
   initializeSimulation() {
     if (!this.simulationWorker) {
@@ -135,27 +151,38 @@ export class WebworkerService {
 
   parfilecontent: string = '// empty parameter file';
 
-  loadfile(filepath: string) {
-    this.http.get(filepath, {responseType: 'text'})
+  loadsim(simidx: number) {
+    this.selectedSimIdx = simidx;
+    const filename = this.getParfilePath(simidx);
+    this.http.get(filename, {responseType: 'text'})
         .subscribe(
             data => {
-              console.log(data);
+              // console.log(data);
               this.parfilecontent = data;
             },
             error => {
-              console.log('error loading parameter file ' + filepath);
+              console.log('error loading parameter file ' + filename);
               this.parfilecontent =
-                  '// error loading parameter file ' + filepath;
+                  '// error loading parameter file ' + filename;
             });
   }
 
   public getSimulations(): Observable<any> {
-    return this.http.get("./assets/simulations/database.json");
-}
+    return this.http.get('./assets/simulations/simulation_examples.json');
+  }
 
   startSimulation() {
     this.clearResults();
-    var runsimdata: any = {'parfilestring': this.parfilecontent};
+
+    // transfer data
+    // wait until transfered
+
+    var runsimdata: any = {
+      'parfilestring': this.parfilecontent,    
+      'parfile': this.parfiles[this.selectedSimIdx].parfile,  
+      'FSfolder': this.parfiles[this.selectedSimIdx].prefixpath,
+      'geomtries': this.parfiles[this.selectedSimIdx].geometries,
+    };
     this.status = 'running';
     this.simulationStarted.next(true);
     this.postMessage(runsimdata);
@@ -172,29 +199,31 @@ export class WebworkerService {
         console.log('(main) message received: runtimeready');
         this.status = 'idle';
         this.runtimeReady.next(true);
-
       } else if (data.data.simready === true) {
         console.log('(main) message received: simready');
         this.status = 'idle';
         this.simulationFinished.next(true);
       } else if (data.data.fileready === true) {
-        if (data.data.filename.endsWith('.vtp') && data.data.filename.includes('Hull')) {
+        if (data.data.filename.endsWith('.vtp') &&
+            data.data.filename.includes('Hull')) {
           console.log(
               '(main) message received: fileready, file=' + data.data.filename);
           let filenameonly = data.data.filename.replace(/^.*[\\\/]/, '');
           this.results.push(new Result(
               data.data.filecontent, filenameonly, vtkCutter.newInstance(),
-              vtkActor.newInstance(),undefined,undefined,undefined,vtkPlane.newInstance()));
-          this.resultReady.next(this.results.length-1);
-          console.log(this.results.length-1)
-          this.sendNewResult(this.results.length-1);
+              vtkActor.newInstance(), undefined, undefined, undefined,
+              vtkPlane.newInstance()));
+          this.resultReady.next(this.results.length - 1);
+          console.log(this.results.length - 1);
+          this.sendNewResult(this.results.length - 1);
           // console.log(this.results);
         }
         if (data.data.filename.endsWith('.vtu')) {
-          console.log('(main) message received: fileready, file=' + data.data.filename);
+          console.log(
+              '(main) message received: fileready, file=' + data.data.filename);
           console.log('.vtu file format not supported');
           // console.log(this.results);
-        }        
+        }
       } else if (data.data.stdout === true || data.data.stderr === true) {
         console.log(
             '(main) message received: stdout/stderr, text=' + data.data.text);
@@ -237,6 +266,4 @@ export class WebworkerService {
   getNewResults(): Observable<any> {
     return this.newresult.asObservable();
   }
-
-
 }

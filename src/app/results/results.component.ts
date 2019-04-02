@@ -47,7 +47,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   // clipping
   activeClipDir: string = 'x';
   clipdirs: string[] = ['x', 'y'];
-  activeClipValue: any = 50;
+  activeClipValue: any = 101;
   centerOff: any = [0, 0, 0];
 
   updateClip(){

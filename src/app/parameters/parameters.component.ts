@@ -20,11 +20,11 @@ export class ParametersComponent implements OnInit {
   ngOnInit() {}
 
   reloadContent() {
-    this.loadfile();
+    this.loadsim(this.webworkerService.selectedSimIdx);
   }
 
-  loadfile() {
-    this.webworkerService.loadfile(this.webworkerService.selectedParfile);
+  loadsim(simidx: number) {
+    this.webworkerService.loadsim(simidx);
     this.selectedTabIndex = 1;
   }
 }

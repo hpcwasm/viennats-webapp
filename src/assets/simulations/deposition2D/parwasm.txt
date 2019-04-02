@@ -1,5 +1,5 @@
-geometry_file = "/assets/geometry2.dx";   // input geometry
-output_path = "./isotropic/";  // relative to this file or absolute
+geometry_file = "./geometry2.dx";   // input geometry
+output_path = "./outputs/";  // relative to this file or absolute
 omp_threads=1; // how many CPU threads to use
 cfl_condition = 0.1;  // advection accuracy, must be <0.5
 grid_delta = 0.5; // grid resolution (absolute)

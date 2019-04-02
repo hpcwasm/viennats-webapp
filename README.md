@@ -36,8 +36,6 @@ HPCWASM_WEBAPP_ASSETS=/home/manstetten/github_hpcwasm/viennats-webapp/src/assets
 
 cp $HPCWASM_WASM_BIN_DIR/viennats.js $HPCWASM_WEBAPP_ASSETS/viennats.js
 cp $HPCWASM_WASM_BIN_DIR/viennats.wasm $HPCWASM_WEBAPP_ASSETS/viennats.wasm
-cp $HPCWASM_WASM_BIN_DIR/viennats.data $HPCWASM_WEBAPP_ASSETS/viennats.data
-cp $HPCWASM_WASM_BIN_DIR/vtsworker.js $HPCWASM_WEBAPP_ASSETS/vtsworker.js
 ```
 
 # serve local

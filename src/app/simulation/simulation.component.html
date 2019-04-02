@@ -7,7 +7,7 @@
         Parameters
       </mat-panel-title>
       <mat-panel-description>
-        Loaded parameter file: {{webworkerService.selectedParfile}}
+        Loaded configuration: {{webworkerService.parfiles[webworkerService.selectedSimIdx]?.title || " "}}
       </mat-panel-description>
     </mat-expansion-panel-header>
     <app-parameters></app-parameters>

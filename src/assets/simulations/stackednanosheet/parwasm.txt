@@ -3,9 +3,9 @@
 // process flow based on https://doi.org/10.23919/VLSIT.2017.7998183
 
 
-geometry_file = "/assets/sio2_periodic.vtk";   
+geometry_file = "./sio2_periodic.vtk";   
 
-output_path = "./geometry/";
+output_path = "./outputs/";
 
 omp_threads=1;
 cfl_condition = 0.4;
@@ -19,7 +19,7 @@ num_dimensions = 3;
 
 print_vtk=true;
 print_volume_hull=true;
-print_volume_tetra=true;
+print_volume_tetra=false;
 print_lvst=false;
 
 boundary_conditions = {
@@ -68,7 +68,7 @@ processes = {
     model_name="Mask";
 
     parameters={
-      mask_file = "/assets/mask_periodic.vtk";
+      mask_file = "./mask_periodic.vtk";
       surface_geometry=false;
       remove_bottom=false;
     };
@@ -152,7 +152,7 @@ processes = {
     model_name="Mask";
 
     parameters={
-      mask_file = "/assets/single_gate_mask.vtk";
+      mask_file = "./single_gate_mask.vtk";
       surface_geometry=false;
       remove_bottom=false;
     };
