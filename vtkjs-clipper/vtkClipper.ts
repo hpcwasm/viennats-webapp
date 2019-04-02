@@ -30,10 +30,11 @@ function vtkCutter(publicAPI, model) {
     const points = input.getPoints();
     const pointsData = points.getData();
     const numPts = points.getNumberOfPoints();
-    const cellDataValues  = input.getCellData().getScalars().getData();
+    const cellDataValues = input.getCellData() === undefined ? undefined: input.getCellData().getScalars().getData();
     const newPointsData = [];
     const newLinesData = [];
     const newPolysData = [];
+    const newCellDataValues = [];
     // console.log("################cellDataValues");
     // console.log(cellDataValues);  
     if (!model.cutScalars || model.cutScalars.length < numPts) {
@@ -93,7 +94,7 @@ function vtkCutter(publicAPI, model) {
       // Go to next cell if cell is not crossed by cut function
       if (allPointsSameSide) {
         // add cell if on positive side
-        if (sideFirstPoint > 0)
+        if (sideFirstPoint)
         {
           
           // Get id of points that constitute the current cell
@@ -108,6 +109,7 @@ function vtkCutter(publicAPI, model) {
           
           // add current cell points to newpoints
           newPolysData.push(cellPointsID.length);
+          newCellDataValues.push(cellDataValues[cellId]);
           // console.log(cellPointsID.length);
           for (let i = 0; i < cellPointsID.length; i++)
           {
@@ -128,119 +130,7 @@ function vtkCutter(publicAPI, model) {
       }
     
       continue;
-      // Get id of points that constitute the current cell
-      const cellPointsID = [];
-      for (
-        let i = valuesInCell * cellId + 1;
-        i < valuesInCell * (cellId + 1);
-        i++
-      ) {
-        cellPointsID.push(dataCell[i]);
-      }
 
-      // Find and compute edges which intersect cells
-      const intersectedEdgesList = [];
-      for (let i = 0; i < cellPointsID.length; i++) {
-        const idNext = i + 1 === cellPointsID.length ? 0 : i + 1;
-
-        // Go to next edge if edge is not crossed
-        // TODO: in most come cases, (numberOfPointsInCell - 1) or 0 edges of the cell
-        // will be crossed, but if it crosses right at a point, it could be intersecting
-        // with (numberOfPoints) or 1 edge(s). Do we account for that?
-        const signPoint0 = cellPointsScalars[i] > 0;
-        const signPoint1 = cellPointsScalars[idNext] > 0;
-        if (signPoint1 === signPoint0) {
-          continue;
-        }
-
-        // Compute preferred interpolation direction
-        let e1 = i;
-        let e2 = idNext;
-        let deltaScalar = cellPointsScalars[e2] - cellPointsScalars[e1];
-        if (deltaScalar <= 0) {
-          e1 = idNext;
-          e2 = i;
-          deltaScalar *= -1;
-        }
-
-        // linear interpolation
-        let t = 0.0;
-        if (deltaScalar !== 0.0) {
-          t = (model.cutValue - cellPointsScalars[e1]) / deltaScalar;
-        }
-
-        // points position
-        const pointID1 = cellPointsID[e1];
-        const pointID2 = cellPointsID[e2];
-        x1[0] = pointsData[pointID1 * 3];
-        x1[1] = pointsData[pointID1 * 3 + 1];
-        x1[2] = pointsData[pointID1 * 3 + 2];
-        x2[0] = pointsData[pointID2 * 3];
-        x2[1] = pointsData[pointID2 * 3 + 1];
-        x2[2] = pointsData[pointID2 * 3 + 2];
-
-        // Compute the intersected point on edge
-        const computedIntersectedPoint = [
-          x1[0] + t * (x2[0] - x1[0]),
-          x1[1] + t * (x2[1] - x1[1]),
-          x1[2] + t * (x2[2] - x1[2]),
-        ];
-
-        // Keep track of it
-        intersectedEdgesList.push({
-          pointEdge1: pointID1, // id of one point of the edge
-          pointEdge2: pointID2, // id of one point of the edge
-          intersectedPoint: computedIntersectedPoint, // 3D coordinate of points that intersected edge
-          newPointID: -1, // id of the intersected point when it will be added into vtkPoints
-        });
-      }
-
-      // Add points into newPointList
-      for (let i = 0; i < intersectedEdgesList.length; i++) {
-        const intersectedEdge = intersectedEdgesList[i];
-        let alreadyAdded = false;
-        // Check if point/edge already added
-        for (let j = 0; j < crossedEdges.length; j++) {
-          const crossedEdge = crossedEdges[j];
-          const sameEdge =
-            intersectedEdge.pointEdge1 === crossedEdge.pointEdge1 &&
-            intersectedEdge.pointEdge2 === crossedEdge.pointEdge2;
-          const samePoint =
-            intersectedEdge.intersectedPoint[0] ===
-              crossedEdge.intersectedPoint[0] &&
-            intersectedEdge.intersectedPoint[1] ===
-              crossedEdge.intersectedPoint[1] &&
-            intersectedEdge.intersectedPoint[2] ===
-              crossedEdge.intersectedPoint[2];
-          if (sameEdge || samePoint) {
-            alreadyAdded = true;
-            intersectedEdgesList[i].newPointID = crossedEdges[j].newPointID;
-            break;
-          }
-        }
-        if (!alreadyAdded) {
-          newPointsData.push(intersectedEdge.intersectedPoint[0]);
-          newPointsData.push(intersectedEdge.intersectedPoint[1]);
-          newPointsData.push(intersectedEdge.intersectedPoint[2]);
-          intersectedEdgesList[i].newPointID = newPointsData.length / 3 - 1;
-          crossedEdges.push(intersectedEdgesList[i]);
-        }
-      }
-
-      // Store cells
-      const cellSize = intersectedEdgesList.length;
-      if (cellSize === 2) {
-        newLinesData.push(
-          cellSize,
-          intersectedEdgesList[0].newPointID,
-          intersectedEdgesList[1].newPointID
-        );
-      } else if (cellSize > 2) {
-        newPolysData.push(cellSize);
-        intersectedEdgesList.forEach((edge) => {
-          newPolysData.push(edge.newPointID);
-        });
-      }
     }
 
     // Set points
@@ -260,7 +150,7 @@ function vtkCutter(publicAPI, model) {
       // console.log(newPolysData);
       output.getPolys().setData(newPolysData);
       output.getCellData().setScalars(
-        vtkDataArray.newInstance({ numberOfComponents: 1, name: 'Attribute', values: cellDataValues })
+        vtkDataArray.newInstance({ numberOfComponents: 1, name: 'Attribute', values: newCellDataValues })
       );      
     }
   }
