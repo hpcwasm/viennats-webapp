@@ -244,6 +244,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     }
 
     let props = this.renderer.getViewProps();
+    props[index].setVisibility(false);
     if (this.playing || this.activeResultsIndex == undefined) {
       this.playing = true;
       this.activeResultsIndex = this.webworkerService.results.length - 1;
