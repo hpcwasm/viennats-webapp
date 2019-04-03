@@ -5,6 +5,7 @@ import {ResultsComponent} from 'src/app/results/results.component';
 import vtkPlane from 'vtk.js/Sources/Common/DataModel/Plane';
 import vtkCutter from 'vtk.js/Sources/Filters/Core/Cutter';
 import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
+import {DeviceinfoService} from '../deviceinfo/deviceinfo.service';
 
 export interface ParFile {
   prefixpath: string;
@@ -92,14 +93,16 @@ export class WebworkerService {
   resultReady: EventEmitter<any> = new EventEmitter();
   // stdoutReady: EventEmitter<any> = new EventEmitter();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, public deviceinfo: DeviceinfoService) {
     this.getSimulations().subscribe(data => {
       console.log('received simulation_examples.json');
-      console.log(data);
+      // console.log(data);
       for (let example of data.simulations) {
+        if (this.deviceinfo.deviceLevel>=example.devicelevel ){
         this.parfiles.push(new ParFileClass(
             example.prefixpath, example.parfile, example.geometries,
             example.title, example.image, example.description, false));
+        }
       }
       this.selectedSimIdx = 0;
       this.loadsim(this.selectedSimIdx);

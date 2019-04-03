@@ -18,7 +18,7 @@ export class CodemirrorComponent implements OnInit {
         console.log(data);
         // console.log(typeof data);
         this.editorcontent = data;
-        console.log( this.editorcontent);
+        // console.log( this.editorcontent);
       });
     }
     else {

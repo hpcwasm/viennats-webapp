@@ -58,8 +58,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
     var domsize = [
       (bounds[1] - bounds[0]), (bounds[3] - bounds[2]), (bounds[5] - bounds[4])
     ];
-    console.log('########## domsize ');
-    console.log(domsize);
+    // console.log('########## domsize ');
+    // console.log(domsize);
     if (clipdir == 'x') {
       var clipvalnorm = clipValue / 100.0;
       var normal = [0, 1, 0];
@@ -71,10 +71,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
       var center = [bounds[1] - domsize[0] * clipvalnorm, bounds[3], bounds[5]];      
 
     }
-    console.log(normal);
-    console.log(center);
-    console.log(clipValue);
-    console.log(clipvalnorm);
+    // console.log(normal);
+    // console.log(center);
+    // console.log(clipValue);
+    // console.log(clipvalnorm);
     return {origin: center, normal: normal};
   }
 
@@ -84,6 +84,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   playing: boolean = true;
   activeResultsIndex = undefined;
   togglePlay() {
+    console.log("####### togglePlay");
     if (this.activeResultsIndex != undefined) {
       if (!this.playing) {
         this.activeResultsIndex = this.webworkerService.results.length - 1;
@@ -95,16 +96,21 @@ export class ResultsComponent implements OnInit, OnDestroy {
     }
   }
   showPrev() {
+    console.log("####### showPrev");
     if (this.activeResultsIndex != undefined) {
+      console.log("this.activeResultsIndex="+ this.activeResultsIndex);
       this.activeResultsIndex =
           this.activeResultsIndex > 0 ? this.activeResultsIndex - 1 : 0;
       this.playing = false;
+      console.log("this.activeResultsIndex="+ this.activeResultsIndex);
       this.displayOutput(this.activeResultsIndex);
       this.renderWindow.render();
     }
   }
   showNext() {
+    console.log("####### showNext");
     if (this.activeResultsIndex != undefined) {
+      console.log("this.activeResultsIndex="+ this.activeResultsIndex);
       this.activeResultsIndex =
           this.webworkerService.results.length - 1 > this.activeResultsIndex ?
           this.activeResultsIndex + 1 :
@@ -189,18 +195,18 @@ export class ResultsComponent implements OnInit, OnDestroy {
     var mapper =
         vtkMapper.newInstance({scalarVisibility: true, scalarRange: [0, 13]});
 
-    console.log('########## bounds ');
+    // console.log('########## bounds ');
     var bounds = polydata.getBounds();
     this.webworkerService.results[index].bounds = bounds;
-    console.log(bounds);
+    // console.log(bounds);
     var normal = [0, 1, 0];
 
-    console.log('########## center ');
+    // console.log('########## center ');
     var center = [
       (bounds[1] - bounds[0]) / 2.0, (bounds[3] - bounds[2]) / 2.0,
       (bounds[5] - bounds[4]) / 2.0
     ];
-    console.log(center);
+    // console.log(center);
     const maxb = Math.max(...center);
     const minb = Math.min(...center);
 
@@ -218,10 +224,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
       var plane =
           vtkPlane.newInstance({origin: tmp.origin, normal: tmp.normal});
       this.webworkerService.results[index].clipplane = plane;          
-      console.log('########## cutplane ');
-      console.log(plane);
-      console.log(this.webworkerService.results[index].cliporg);
-      console.log(this.webworkerService.results[index].clipnorm);
+      // console.log('########## cutplane ');
+      // console.log(plane);
+      // console.log(this.webworkerService.results[index].cliporg);
+      // console.log(this.webworkerService.results[index].clipnorm);
 
       this.webworkerService.results[index].cutter.setCutFunction(plane);
       this.webworkerService.results[index].cutter.setInputConnection(
@@ -250,7 +256,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
       this.activeResultsIndex = this.webworkerService.results.length - 1;
       // make new results visible
       this.displayOutput(this.activeResultsIndex);
-      console.log('########## this.playing || this.activeResultsIndex == undefined ');
+      // console.log('########## this.playing || this.activeResultsIndex == undefined ');
     } else {
       // nothing to update
     }

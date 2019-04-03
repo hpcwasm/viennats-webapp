@@ -1,4 +1,4 @@
-geometry_file = "/assets/3d_hole.dx";
+geometry_file = "./3d_hole.dx";
 
 print_statistics=false;
 
@@ -10,7 +10,8 @@ input_scale=0.5e-6;
 grid_delta=1e-6;
 print_vtk=true;
 num_dimensions = 3;
-
+print_volume_hull=true;
+print_volume_tetra=false;
 open_boundary="+y";
 
 boundary_conditions = {
@@ -28,7 +29,7 @@ processes = {
 	finite_difference_scheme=ENGQUIST_OSHER_1ST_ORDER;
 	partition_data_structure=NEIGHBOR_LINKS_ARRAYS;
 	process_time=20;
-//        add_layer=1;
+        add_layer=1;
 	model_name="NonlinearDeposition";
 	parameters= {
 		direction		= {0,-1,0};
@@ -40,6 +41,7 @@ processes = {
 	};
 	print_velocities=false;
 	final_output=true;
-        output_times={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+        output_volume={0,2,5,10,15,20};
      }
 };
+

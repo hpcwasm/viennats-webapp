@@ -50,18 +50,18 @@
         <div fxLayout="column" fxLayoutAlign="center center">
           <!-- <div class="list-container"> -->
           <div fxLayout="row" fxLayoutAlign="center center">
-            <button mat-icon-button>
-              <mat-icon svgIcon="myprev" (click)="showPrev()"></mat-icon>
+            <button mat-icon-button (click)="showPrev()">
+              <mat-icon svgIcon="myprev" ></mat-icon>
             </button>
             <!-- <div>Resuts </div> -->
-            <button *ngIf="this.playing" mat-button> Output {{activeResultsIndex != undefined ? activeResultsIndex
+            <button *ngIf="this.playing" mat-button (click)="togglePlay()"> Output {{activeResultsIndex != undefined ? activeResultsIndex
               :"-"}}/{{webworkerService.results.length > 0 ? webworkerService.results.length-1 : "-" }}<mat-icon
-                svgIcon="mypause" (click)="togglePlay()"></mat-icon></button>
-            <button *ngIf="!this.playing" mat-button>Output {{activeResultsIndex != undefined ? activeResultsIndex
+                svgIcon="mypause" ></mat-icon></button>
+            <button *ngIf="!this.playing" mat-button (click)="togglePlay()">Output {{activeResultsIndex != undefined ? activeResultsIndex
               :"-"}}/{{webworkerService.results.length > 0 ? webworkerService.results.length-1 : "-" }}<mat-icon
-                svgIcon="myplay" (click)="togglePlay()"></mat-icon></button>
-            <button mat-icon-button>
-              <mat-icon svgIcon="mynext" (click)="showNext()"></mat-icon>
+                svgIcon="myplay" ></mat-icon></button>
+            <button mat-icon-button (click)="showNext()">
+              <mat-icon svgIcon="mynext" ></mat-icon>
             </button>
           </div>
           <div *ngIf="this.webworkerService.results.length == 0">

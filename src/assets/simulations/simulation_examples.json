@@ -1,6 +1,7 @@
 {
     "simulations": [
         {
+            "devicelevel": 1,
             "prefixpath": "deposition2D",
             "parfile": "parwasm.txt",
             "geometries": ["geometry2.dx"],            
@@ -9,10 +10,20 @@
             "description": "This is the short description of this simulation."
         },   
         {
+            "devicelevel": 3,
             "prefixpath": "stackednanosheet",
             "parfile": "parwasm.txt",
             "geometries": ["sio2_periodic.vtk", "mask_periodic.vtk","single_gate_mask.vtk"],
             "title": "Stacked Nanosheet",
+            "image": "cover.png",
+            "description": "This is the short description of this simulation."
+        },
+        {
+            "devicelevel": 2,            
+            "prefixpath": "deposition3D",
+            "parfile": "parwasm.txt",
+            "geometries": ["3d_hole.dx"],
+            "title": "Deposition 3D",
             "image": "cover.png",
             "description": "This is the short description of this simulation."
         }

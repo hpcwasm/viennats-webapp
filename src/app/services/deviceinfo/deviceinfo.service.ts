@@ -10,7 +10,7 @@ export class DeviceinfoService {
   isDesktop: boolean = false;
   isTablet: boolean = false;
   isMobile: boolean = false;
-
+  deviceLevel: number = 0;
 
   support: boolean= false;
   supportCheck: boolean = true;
@@ -26,8 +26,11 @@ export class DeviceinfoService {
     this.isDesktop = this.deviceService.isDesktop();
     this.isTablet = this.deviceService.isTablet();
     this.isMobile = this.deviceService.isMobile();
+    if (this.isDesktop)this.deviceLevel = 3;
+    if (this.isTablet)this.deviceLevel = 2;
+    if (this.isMobile)this.deviceLevel = 1;
 
-    this.support = this.isDesktop && this.wasmSupport;
+    this.support = this.wasmSupport;
     this.supportCheck = true;    
    }
 
