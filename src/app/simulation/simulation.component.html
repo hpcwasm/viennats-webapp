@@ -4,10 +4,10 @@
   <mat-expansion-panel expanded="false">
     <mat-expansion-panel-header>
       <mat-panel-title fxFlex="100px">
-        Parameters
+        Settings
       </mat-panel-title>
       <mat-panel-description>
-        Loaded configuration: {{webworkerService.parfiles[webworkerService.selectedSimIdx]?.title || " "}}
+         Loaded: {{webworkerService.parfiles[webworkerService.selectedSimIdx]?.title || " "}}
       </mat-panel-description>
     </mat-expansion-panel-header>
     <app-parameters></app-parameters>
@@ -21,7 +21,7 @@
       </mat-panel-title>
       <mat-panel-description fxLayout="row" fxFlex fxLayoutAlign="start center" fxLayoutGap="10px">
           <button mat-flat-button color="primary" [disabled]="webworkerService.status == 'running' || webworkerService.status ==  'initializing' ||  webworkerService.status ==  'exception' " (click)="startSimulation();$event.stopPropagation();" matTooltip="Start simulation using parameters defined above">Start</button>
-          <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'" (click)="terminateSimulation();$event.stopPropagation();">terminate/respawn</button>
+          <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'" (click)="terminateSimulation();$event.stopPropagation();">reload</button>
         <div fxLayout="row">
         <div [style.color]="webworkerService.getStatusColor(webworkerService.status)">
             &nbsp;{{webworkerService.status}}</div>

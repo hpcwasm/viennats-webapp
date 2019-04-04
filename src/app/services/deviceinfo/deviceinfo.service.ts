@@ -30,7 +30,7 @@ export class DeviceinfoService {
     if (this.isTablet)this.deviceLevel = 2;
     if (this.isMobile)this.deviceLevel = 1;
 
-    this.support = this.wasmSupport;
+    this.support = this.wasmSupport && this.deviceService.device != "iPhone";
     this.supportCheck = true;    
    }
 
