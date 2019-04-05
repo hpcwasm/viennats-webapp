@@ -11,7 +11,10 @@ import vtkCalculator from 'vtk.js/Sources/Filters/General/Calculator';
 import vtkConeSource from 'vtk.js/Sources/Filters/Sources/ConeSource';
 import vtkXMLPolyDataReader from 'vtk.js/Sources/IO/XML/XMLPolyDataReader';
 import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
+import vtkColorTransferFunction from 'vtk.js/Sources/Rendering/Core/ColorTransferFunction';
+import vtkColorMaps from 'vtk.js/Sources/Rendering/Core/ColorTransferFunction/ColorMaps';
 import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';
+import {ColorMode, ScalarMode,} from 'vtk.js/Sources/Rendering/Core/Mapper/Constants';
 // https://stackoverflow.com/questions/48643556/use-vtk-js-glsl-files-in-angular-cli-app
 
 import vtkFullScreenRenderWindow from 'vtk.js/Sources/Rendering/Misc/FullScreenRenderWindow';
@@ -40,6 +43,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
   renderWindow: any;
   redcolor: Color;
 
+  lookupTable: any;
+
   // props: any;
   subscription: Subscription;
   subscriptionResulstCleared: Subscription;
@@ -50,7 +55,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   activeClipValue: any = 101;
   centerOff: any = [0, 0, 0];
 
-  updateClip(){
+  updateClip() {
     this.displayOutput(this.activeResultsIndex);
   }
 
@@ -68,8 +73,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     if (clipdir == 'y') {
       var clipvalnorm = clipValue / 100.0;
       var normal = [1, 0, 0];
-      var center = [bounds[1] - domsize[0] * clipvalnorm, bounds[3], bounds[5]];      
-
+      var center = [bounds[1] - domsize[0] * clipvalnorm, bounds[3], bounds[5]];
     }
     // console.log(normal);
     // console.log(center);
@@ -84,7 +88,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   playing: boolean = true;
   activeResultsIndex = undefined;
   togglePlay() {
-    console.log("####### togglePlay");
+    console.log('####### togglePlay');
     if (this.activeResultsIndex != undefined) {
       if (!this.playing) {
         this.activeResultsIndex = this.webworkerService.results.length - 1;
@@ -96,21 +100,21 @@ export class ResultsComponent implements OnInit, OnDestroy {
     }
   }
   showPrev() {
-    console.log("####### showPrev");
+    console.log('####### showPrev');
     if (this.activeResultsIndex != undefined) {
-      console.log("this.activeResultsIndex="+ this.activeResultsIndex);
+      console.log('this.activeResultsIndex=' + this.activeResultsIndex);
       this.activeResultsIndex =
           this.activeResultsIndex > 0 ? this.activeResultsIndex - 1 : 0;
       this.playing = false;
-      console.log("this.activeResultsIndex="+ this.activeResultsIndex);
+      console.log('this.activeResultsIndex=' + this.activeResultsIndex);
       this.displayOutput(this.activeResultsIndex);
       this.renderWindow.render();
     }
   }
   showNext() {
-    console.log("####### showNext");
+    console.log('####### showNext');
     if (this.activeResultsIndex != undefined) {
-      console.log("this.activeResultsIndex="+ this.activeResultsIndex);
+      console.log('this.activeResultsIndex=' + this.activeResultsIndex);
       this.activeResultsIndex =
           this.webworkerService.results.length - 1 > this.activeResultsIndex ?
           this.activeResultsIndex + 1 :
@@ -128,11 +132,43 @@ export class ResultsComponent implements OnInit, OnDestroy {
   constructor(
       public webworkerService: WebworkerService,
       private fileSaverService: FileSaverService) {
-    // this.files.push(new File("Filenam1", false));
-    // this.files.push(new File("Filenam2", false ));
-    // this.files.push(new File("Filenam3", true));
-    // this.files.push(new File("Filenam4", false));
-    // this.tucolor = new Color(0,102,153);
+    this.lookupTable = vtkColorTransferFunction.newInstance();
+
+    var colors: number[][] = [];
+
+    colors.push([230, 25, 75]);
+    colors.push([60, 180, 75]);
+    colors.push([255, 225, 25]);
+    colors.push([0, 130, 200]);
+    colors.push([245, 130, 48]);
+    colors.push([145, 30, 180]);
+    colors.push([70, 240, 240]);
+    colors.push([240, 50, 230]);
+    colors.push([210, 245, 60]);
+    colors.push([250, 190, 190]);
+    colors.push([0, 128, 128]);
+    colors.push([230, 190, 255]);
+    colors.push([170, 110, 40]);
+    colors.push([255, 250, 200]);
+    colors.push([128, 0, 0]);
+    colors.push([170, 255, 195]);
+    colors.push([128, 128, 0]);
+    colors.push([255, 215, 180]);
+    colors.push([0, 0, 128]);
+    colors.push([128, 128, 128]);
+    console.log(colors);
+
+    for (let i = 0; i < colors.length; i++) {
+      // console.log(colors[i]);
+      // console.log(i);
+      this.lookupTable.addRGBPoint(i, colors[i][0], colors[i][1], colors[i][2]);
+      ++i;
+    }
+
+    // this.lookupTable.addRGBPoint(0, 1, 0, 0);
+    // this.lookupTable.addRGBPoint(1, 0, 1, 0);
+    // this.lookupTable.addRGBPoint(2, 0, 0, 1);
+
     this.redcolor = new Color(255 / 255, 0, 0);
     this.subscription =
         this.webworkerService.getNewResults().subscribe(message => {
@@ -146,6 +182,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   clearRenderWindow() {
+
     this.renderer.removeAllViewProps();
     // this.props = this.renderer.getViewProps();
     this.renderWindow.render();
@@ -170,19 +207,6 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initRenderWindow();
-
-    // this.conesource = vtkConeSource.newInstance({ height: 1.0 })
-    // this.mapper = vtkMapper.newInstance();
-    // this.mapper.setInputConnection(this.conesource.getOutputPort());
-
-    // this.actor = vtkActor.newInstance();
-    // this.actor.setMapper(this.mapper);
-    // this.actor.getProperty().setColor(1,0,0);
-    // this.renderer.addActor(this.actor);
-    // this.renderer.resetCamera();
-    // this.renderWindow.render();
-    // let props = this.renderer.getViewProps();
-    // console.log(props);
   }
 
 
@@ -192,8 +216,12 @@ export class ResultsComponent implements OnInit, OnDestroy {
     var vtpReader = vtkXMLPolyDataReader.newInstance();
     vtpReader.parseAsArrayBuffer(buffer);
     var polydata = vtpReader.getOutputData(0);
-    var mapper =
-        vtkMapper.newInstance({scalarVisibility: true, scalarRange: [0, 13]});
+    const cellvalues = polydata.getCellData().getScalars();
+
+    console.log('############## renderResultPlayer');
+    console.log(cellvalues.getRange());
+    // console.log(this.webworkerService.results[index].mapper);
+
 
     // console.log('########## bounds ');
     var bounds = polydata.getBounds();
@@ -210,6 +238,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
     const maxb = Math.max(...center);
     const minb = Math.min(...center);
 
+    const mapper = vtkMapper.newInstance();
+
     if (Math.abs(maxb / minb) < 1000) {  // 3D results
       this.has3Dresults = true;
       var cuttingplane = [
@@ -223,27 +253,49 @@ export class ResultsComponent implements OnInit, OnDestroy {
       this.webworkerService.results[index].clipnorm = tmp.normal;
       var plane =
           vtkPlane.newInstance({origin: tmp.origin, normal: tmp.normal});
-      this.webworkerService.results[index].clipplane = plane;          
+      this.webworkerService.results[index].clipplane = plane;
       // console.log('########## cutplane ');
       // console.log(plane);
       // console.log(this.webworkerService.results[index].cliporg);
       // console.log(this.webworkerService.results[index].clipnorm);
 
       this.webworkerService.results[index].cutter.setCutFunction(plane);
+
       this.webworkerService.results[index].cutter.setInputConnection(
           vtpReader.getOutputPort());
+
       mapper.setInputConnection(
           this.webworkerService.results[index].cutter.getOutputPort());
-      mapper.setScalarModeToUseCellData();
+
+      // mapper.setScalarModeToUseCellData();
+
     } else {  // 2D results
       this.has3Dresults = false;
-      mapper.setScalarModeToUseCellData();
-      mapper.setInputData(polydata);
+      // mapper.setScalarModeToUseCellData();
+      mapper.setInputConnection(vtpReader.getOutputPort());
     }
 
 
     this.webworkerService.results[index].actor.setMapper(mapper);
     this.renderer.addActor(this.webworkerService.results[index].actor);
+
+    console.log(this.lookupTable);
+    console.log(this.lookupTable.getMappingRange());
+
+
+    var lookupTable = this.lookupTable;
+
+    mapper.set({
+      interpolateScalarsBeforeMapping: false,
+      useLookupTableScalarRange: true,
+      scalarVisibility: true,
+      lookupTable
+      // colorMode: ColorMode.MAP_SCALARS
+    });
+
+    const lut = mapper.getLookupTable();
+    // lut.updateRange();
+    console.log(lut.getMappingRange());
 
     if (index == 0) {
       this.renderer.resetCamera();
@@ -256,7 +308,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
       this.activeResultsIndex = this.webworkerService.results.length - 1;
       // make new results visible
       this.displayOutput(this.activeResultsIndex);
-      // console.log('########## this.playing || this.activeResultsIndex == undefined ');
+      // console.log('########## this.playing || this.activeResultsIndex ==
+      // undefined ');
     } else {
       // nothing to update
     }
@@ -275,6 +328,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   displayOutput(idx: number) {
+    console.log('###### displayOutput');
     let props = this.renderer.getViewProps();
 
     let i = 0;
@@ -297,8 +351,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
           // set new vtkplane
           this.webworkerService.results[idx].cliporg = activeclip.origin;
           this.webworkerService.results[idx].clipnorm = activeclip.normal;
-          this.webworkerService.results[idx].clipplane.setOrigin(activeclip.origin);
-          this.webworkerService.results[idx].clipplane.setNormal(activeclip.normal);
+          this.webworkerService.results[idx].clipplane.setOrigin(
+              activeclip.origin);
+          this.webworkerService.results[idx].clipplane.setNormal(
+              activeclip.normal);
           console.log('########## new cutplane ');
           // console.log(plane);
           this.renderWindow.render();
@@ -309,12 +365,6 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
     this.renderWindow.render();
 
-    // TODO HERE
-
-    // console.log(
-    //     '########################
-    //     this.webworkerService.results[idx].cutter');
-    // console.log(this.webworkerService.results[idx].cutter);
   }
 
   downloadResult(idx: number) {

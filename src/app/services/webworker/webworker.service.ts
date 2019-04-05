@@ -5,6 +5,9 @@ import {ResultsComponent} from 'src/app/results/results.component';
 import vtkPlane from 'vtk.js/Sources/Common/DataModel/Plane';
 import vtkCutter from 'vtk.js/Sources/Filters/Core/Cutter';
 import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
+import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';
+import {ColorMode, ScalarMode,} from 'vtk.js/Sources/Rendering/Core/Mapper/Constants';
+
 import {DeviceinfoService} from '../deviceinfo/deviceinfo.service';
 
 export interface ParFile {
@@ -45,15 +48,14 @@ export class WebworkerService {
   }
   getBEPrefix(idx: number) {
     return './assets/simulations/' + this.parfiles[idx].prefixpath + '/';
-  }  
+  }
   getFSPrefix(idx: number) {
     return '/simulations/' + this.parfiles[idx].prefixpath + '/';
-
   }
   getImageFilePath(idx: number) {
-    return './assets/simulations/' + this.parfiles[idx].prefixpath + '/' + 
+    return './assets/simulations/' + this.parfiles[idx].prefixpath + '/' +
         this.parfiles[idx].image;
-  }  
+  }
 
   results: Result[] = [];
 
@@ -98,10 +100,10 @@ export class WebworkerService {
       console.log('received simulation_examples.json');
       // console.log(data);
       for (let example of data.simulations) {
-        if (this.deviceinfo.deviceLevel>=example.devicelevel ){
-        this.parfiles.push(new ParFileClass(
-            example.prefixpath, example.parfile, example.geometries,
-            example.title, example.image, example.description, false));
+        if (this.deviceinfo.deviceLevel >= example.devicelevel) {
+          this.parfiles.push(new ParFileClass(
+              example.prefixpath, example.parfile, example.geometries,
+              example.title, example.image, example.description, false));
         }
       }
       this.selectedSimIdx = 0;
@@ -113,7 +115,10 @@ export class WebworkerService {
   }
 
   clearResults() {
-    this.results = [];
+    // this.results.length = 0;
+    while (this.results.length > 0) {
+      this.results.pop();
+    }
     this.sendResultsCleared();
   }
 
@@ -181,8 +186,8 @@ export class WebworkerService {
     // wait until transfered
 
     var runsimdata: any = {
-      'parfilestring': this.parfilecontent,    
-      'parfile': this.parfiles[this.selectedSimIdx].parfile,  
+      'parfilestring': this.parfilecontent,
+      'parfile': this.parfiles[this.selectedSimIdx].parfile,
       'FSfolder': this.parfiles[this.selectedSimIdx].prefixpath,
       'geomtries': this.parfiles[this.selectedSimIdx].geometries,
     };

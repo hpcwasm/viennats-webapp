@@ -1,14 +1,68 @@
 {
     "simulations": [
+      {
+           "devicelevel": 1,
+           "prefixpath": "CylinderPhysical",
+           "parfile": "CylinderPhysical.txt",
+           "title": "Physical Hole Etching",
+           "geometries": ["bulk.vtk", "mask.vtk"],
+           "image": "cover.png",
+           "description": "Physical etching of a cylindrical hole."
+       },
+       {
+            "devicelevel": 1,
+            "prefixpath": "CylinderEmulate",
+            "parfile": "CylinderEmulate.txt",
+            "geometries": ["bulk.vtk", "mask.vtk"],
+            "title": "Geometric Hole Etching",
+            "image": "cover.png",
+            "description": "Geometric etching of a cylindrical hole."
+        },
+      {
+           "devicelevel": 1,
+           "prefixpath": "VoidPhysical",
+           "parfile": "VoidPhysical.txt",
+           "title": "Physical Air Gap Deposition",
+           "geometries": ["trench.vtk"],
+           "image": "cover.png",
+           "description": "Physical deposition process creating an air gap."
+       },
+       {
+            "devicelevel": 1,
+            "prefixpath": "VoidEmulate",
+            "parfile": "VoidEmulate.txt",
+            "geometries": ["trench.vtk"],
+            "title": "Geometric Air Gap Deposition",
+            "image": "cover.png",
+            "description": "Geometric deposition creating an air gap."
+        },
+	     {
+            "devicelevel": 1,
+            "prefixpath": "HARPhysical",
+            "parfile": "HARPhysical.txt",
+            "geometries": ["trench_mask.dx"],
+            "title": "Physical HAR Etch",
+            "image": "cover.png",
+            "description": "SF6 high aspect ratio Si etch."
+        },
+        {
+             "devicelevel": 1,
+             "prefixpath": "HAREmulate",
+             "parfile": "HAREmulate.txt",
+             "geometries": ["trench_mask.dx"],
+             "title": "Geometric HAR Etch",
+             "image": "cover.png",
+             "description": "Emulation of a highly direction etch."
+         },
         {
             "devicelevel": 1,
             "prefixpath": "deposition2D",
             "parfile": "parwasm.txt",
-            "geometries": ["geometry2.dx"],            
+            "geometries": ["geometry2.dx"],
             "title": "Deposition Example",
             "image": "cover.png",
-            "description": "This is the short description of this simulation."
-        },   
+            "description": "Geometric deposition of several layers in 2D."
+        },
         {
             "devicelevel": 3,
             "prefixpath": "stackednanosheet",
@@ -16,17 +70,17 @@
             "geometries": ["sio2_periodic.vtk", "mask_periodic.vtk","single_gate_mask.vtk"],
             "title": "Stacked Nanosheet",
             "image": "cover.png",
-            "description": "This is the short description of this simulation."
+            "description": "Geometry creation of a stacked nanowire geometry through emulation."
         },
         {
-            "devicelevel": 2,            
+            "devicelevel": 2,
             "prefixpath": "deposition3D",
             "parfile": "parwasm.txt",
             "geometries": ["3d_hole.dx"],
             "title": "Deposition 3D",
             "image": "cover.png",
-            "description": "This is the short description of this simulation."
+            "description": "Simple deposition process using ray tracing."
         }
-   
+
     ]
 }
