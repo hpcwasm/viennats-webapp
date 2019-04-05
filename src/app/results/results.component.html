@@ -11,6 +11,9 @@
         #vtkview></div>
     </div>
     <div>Left Mouse: rotate, Left Mouse + Shift: pan, Scroll: zoom</div>
+    <div>Camera: [{{this.renderer.getActiveCamera().getPosition()[0] |
+      number:'.2-2'}},{{this.renderer.getActiveCamera().getPosition()[1] |
+      number:'.2-2'}},{{this.renderer.getActiveCamera().getPosition()[2] | number:'.2-2'}}]</div>
   </div>
   <div fxLayout="column">
     <div fxLayoutAlign="center start">
@@ -30,8 +33,8 @@
                 {{clipdir}}
               </mat-radio-button>
             </mat-radio-group>
-            <mat-slider color="primary"  tickInterval="1" [(ngModel)]="activeClipValue" (change)="updateClip()"
-                min="1" max="101"></mat-slider>            
+            <mat-slider color="primary" tickInterval="1" [(ngModel)]="activeClipValue" (change)="updateClip()" min="1"
+              max="101"></mat-slider>
           </div>
 
 
@@ -51,17 +54,19 @@
           <!-- <div class="list-container"> -->
           <div fxLayout="row" fxLayoutAlign="center center">
             <button mat-icon-button (click)="showPrev()">
-              <mat-icon svgIcon="myprev" ></mat-icon>
+              <mat-icon svgIcon="myprev"></mat-icon>
             </button>
             <!-- <div>Resuts </div> -->
-            <button *ngIf="this.playing" mat-button (click)="togglePlay()"> Output {{activeResultsIndex != undefined ? activeResultsIndex
+            <button *ngIf="this.playing" mat-button (click)="togglePlay()"> Output {{activeResultsIndex != undefined ?
+              activeResultsIndex
               :"-"}}/{{webworkerService.results.length > 0 ? webworkerService.results.length-1 : "-" }}<mat-icon
-                svgIcon="mypause" ></mat-icon></button>
-            <button *ngIf="!this.playing" mat-button (click)="togglePlay()">Output {{activeResultsIndex != undefined ? activeResultsIndex
+                svgIcon="mypause"></mat-icon></button>
+            <button *ngIf="!this.playing" mat-button (click)="togglePlay()">Output {{activeResultsIndex != undefined ?
+              activeResultsIndex
               :"-"}}/{{webworkerService.results.length > 0 ? webworkerService.results.length-1 : "-" }}<mat-icon
-                svgIcon="myplay" ></mat-icon></button>
+                svgIcon="myplay"></mat-icon></button>
             <button mat-icon-button (click)="showNext()">
-              <mat-icon svgIcon="mynext" ></mat-icon>
+              <mat-icon svgIcon="mynext"></mat-icon>
             </button>
           </div>
           <div *ngIf="this.webworkerService.results.length == 0">

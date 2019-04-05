@@ -156,7 +156,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     colors.push([255, 215, 180]);
     colors.push([0, 0, 128]);
     colors.push([128, 128, 128]);
-    console.log(colors);
+    // console.log(colors);
 
     for (let i = 0; i < colors.length; i++) {
       // console.log(colors[i]);
@@ -201,6 +201,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
       containerStyle: {height: '100%', width: '100%', position: 'relative'},
     });
     this.renderer = this.fullScreenRenderer.getRenderer();
+    this.renderer.setLightFollowCamera(true);
+    // console.log(this.renderer.getActiveCamera().getPosition());
     this.renderWindow = this.fullScreenRenderer.getRenderWindow();
     // this.props = this.renderer.getViewProps();
   }

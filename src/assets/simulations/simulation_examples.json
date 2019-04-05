@@ -7,7 +7,7 @@
            "title": "Physical Hole Etching",
            "geometries": ["bulk.vtk", "mask.vtk"],
            "image": "cover.png",
-           "description": "Physical etching of a cylindrical hole."
+           "description": "Physical etching of a cylindrical hole using the \"SF6_CH2F2PlasmaEtching\"-Model. The symmetry allows to only simulate a quarter of the cylindric hole by applying reflective boundary conditions in the lateral directions."
        },
        {
             "devicelevel": 1,
@@ -16,7 +16,7 @@
             "geometries": ["bulk.vtk", "mask.vtk"],
             "title": "Geometric Hole Etching",
             "image": "cover.png",
-            "description": "Geometric etching of a cylindrical hole."
+            "description": "Geometric etching of a cylindrical hole using the \"ConstantRates\"-Model. The symmetry allows to only simulate a quarter of the cylindric hole by applying reflective boundary conditions in the lateral directions."
         },
       {
            "devicelevel": 1,
@@ -25,7 +25,7 @@
            "title": "Physical Air Gap Deposition",
            "geometries": ["trench.vtk"],
            "image": "cover.png",
-           "description": "Physical deposition process creating an air gap."
+           "description": "Two-dimensional physical deposition process creating an air gap using the \"NonlinearDeposition\"-Model."
        },
        {
             "devicelevel": 1,
@@ -34,7 +34,7 @@
             "geometries": ["trench.vtk"],
             "title": "Geometric Air Gap Deposition",
             "image": "cover.png",
-            "description": "Geometric deposition creating an air gap."
+            "description": "Two-dimensional geometric deposition process creating an air gap using the \"ConstantRates\"-Model."
         },
 	     {
             "devicelevel": 1,
@@ -43,7 +43,7 @@
             "geometries": ["trench_mask.dx"],
             "title": "Physical HAR Etch",
             "image": "cover.png",
-            "description": "SF6 high aspect ratio Si etch."
+            "description": "High aspect ratio Si etch using a slightly tilted source characteristic and the \"SF6_CH2F2PlasmaEtching\"-Model."
         },
         {
              "devicelevel": 1,
@@ -52,7 +52,7 @@
              "geometries": ["trench_mask.dx"],
              "title": "Geometric HAR Etch",
              "image": "cover.png",
-             "description": "Emulation of a highly direction etch."
+             "description": "Emulation of a highly direction etch using the \"ConstantRates\"-Model."
          },
         {
             "devicelevel": 1,
@@ -61,8 +61,8 @@
             "geometries": ["geometry2.dx"],
             "title": "Deposition Example",
             "image": "cover.png",
-            "description": "Geometric deposition of several layers in 2D."
-        },
+            "description": "Two-dimensional deposition processes using the \"ConstantRates\"-Model and varying \"direction\"-parameter."
+        }, 
         {
             "devicelevel": 3,
             "prefixpath": "stackednanosheet",
@@ -70,16 +70,16 @@
             "geometries": ["sio2_periodic.vtk", "mask_periodic.vtk","single_gate_mask.vtk"],
             "title": "Stacked Nanosheet",
             "image": "cover.png",
-            "description": "Geometry creation of a stacked nanowire geometry through emulation."
+            "description": "Geometry creation of a stacked nanosheet geometry through a sequence of emulated processes, i.e., using the \"ConstantRates\"-Model and boolean operations"
         },
         {
             "devicelevel": 2,
             "prefixpath": "deposition3D",
             "parfile": "parwasm.txt",
             "geometries": ["3d_hole.dx"],
-            "title": "Deposition 3D",
+            "title": "Physical Deposition",
             "image": "cover.png",
-            "description": "Simple deposition process using ray tracing."
+            "description": "Physical Deposition process using the \"NonlinearDeposition\"-Model."
         }
 
     ]
