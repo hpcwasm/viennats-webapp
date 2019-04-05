@@ -1,86 +1,107 @@
 {
     "simulations": [
-      {
-           "devicelevel": 1,
-           "prefixpath": "CylinderPhysical",
-           "parfile": "CylinderPhysical.txt",
-           "title": "Physical Hole Etching",
-           "geometries": ["bulk.vtk", "mask.vtk"],
-           "image": "cover.png",
-           "description": "Physical etching of a cylindrical hole using the \"SF6_CH2F2PlasmaEtching\"-Model. The symmetry allows to only simulate a quarter of the cylindric hole by applying reflective boundary conditions in the lateral directions."
-       },
-       {
+        {
             "devicelevel": 1,
             "prefixpath": "CylinderEmulate",
             "parfile": "CylinderEmulate.txt",
-            "geometries": ["bulk.vtk", "mask.vtk"],
+            "geometries": [
+                "bulk.vtk",
+                "mask.vtk"
+            ],
             "title": "Geometric Hole Etching",
             "image": "cover.png",
             "description": "Geometric etching of a cylindrical hole using the \"ConstantRates\"-Model. The symmetry allows to only simulate a quarter of the cylindric hole by applying reflective boundary conditions in the lateral directions."
         },
-      {
-           "devicelevel": 1,
-           "prefixpath": "VoidPhysical",
-           "parfile": "VoidPhysical.txt",
-           "title": "Physical Air Gap Deposition",
-           "geometries": ["trench.vtk"],
-           "image": "cover.png",
-           "description": "Two-dimensional physical deposition process creating an air gap using the \"NonlinearDeposition\"-Model."
-       },
-       {
+        {
+            "devicelevel": 1,
+            "prefixpath": "CylinderPhysical",
+            "parfile": "CylinderPhysical.txt",
+            "title": "Physical Hole Etching",
+            "geometries": [
+                "bulk.vtk",
+                "mask.vtk"
+            ],
+            "image": "cover.png",
+            "description": "Physical etching of a cylindrical hole using the \"SF6_CH2F2PlasmaEtching\"-Model. The symmetry allows to only simulate a quarter of the cylindric hole by applying reflective boundary conditions in the lateral directions."
+        },
+        {
             "devicelevel": 1,
             "prefixpath": "VoidEmulate",
             "parfile": "VoidEmulate.txt",
-            "geometries": ["trench.vtk"],
+            "geometries": [
+                "trench.vtk"
+            ],
             "title": "Geometric Air Gap Deposition",
             "image": "cover.png",
             "description": "Two-dimensional geometric deposition process creating an air gap using the \"ConstantRates\"-Model."
         },
-	     {
+        {
+            "devicelevel": 1,
+            "prefixpath": "VoidPhysical",
+            "parfile": "VoidPhysical.txt",
+            "title": "Physical Air Gap Deposition",
+            "geometries": [
+                "trench.vtk"
+            ],
+            "image": "cover.png",
+            "description": "Two-dimensional physical deposition process creating an air gap using the \"NonlinearDeposition\"-Model."
+        },
+        {
+            "devicelevel": 1,
+            "prefixpath": "HAREmulate",
+            "parfile": "HAREmulate.txt",
+            "geometries": [
+                "trench_mask.dx"
+            ],
+            "title": "Geometric HAR Etch",
+            "image": "cover.png",
+            "description": "Emulation of a highly direction etch using the \"ConstantRates\"-Model."
+        },
+        {
             "devicelevel": 1,
             "prefixpath": "HARPhysical",
             "parfile": "HARPhysical.txt",
-            "geometries": ["trench_mask.dx"],
+            "geometries": [
+                "trench_mask.dx"
+            ],
             "title": "Physical HAR Etch",
             "image": "cover.png",
             "description": "High aspect ratio Si etch using a slightly tilted source characteristic and the \"SF6_CH2F2PlasmaEtching\"-Model."
         },
         {
-             "devicelevel": 1,
-             "prefixpath": "HAREmulate",
-             "parfile": "HAREmulate.txt",
-             "geometries": ["trench_mask.dx"],
-             "title": "Geometric HAR Etch",
-             "image": "cover.png",
-             "description": "Emulation of a highly direction etch using the \"ConstantRates\"-Model."
-         },
-        {
             "devicelevel": 1,
             "prefixpath": "deposition2D",
             "parfile": "parwasm.txt",
-            "geometries": ["geometry2.dx"],
-            "title": "Deposition Example",
+            "geometries": [
+                "geometry2.dx"
+            ],
+            "title": "Geometric Deposition",
             "image": "cover.png",
             "description": "Two-dimensional deposition processes using the \"ConstantRates\"-Model and varying \"direction\"-parameter."
-        }, 
-        {
-            "devicelevel": 3,
-            "prefixpath": "stackednanosheet",
-            "parfile": "parwasm.txt",
-            "geometries": ["sio2_periodic.vtk", "mask_periodic.vtk","single_gate_mask.vtk"],
-            "title": "Stacked Nanosheet",
-            "image": "cover.png",
-            "description": "Geometry creation of a stacked nanosheet geometry through a sequence of emulated processes, i.e., using the \"ConstantRates\"-Model and boolean operations"
         },
         {
             "devicelevel": 2,
             "prefixpath": "deposition3D",
             "parfile": "parwasm.txt",
-            "geometries": ["3d_hole.dx"],
+            "geometries": [
+                "3d_hole.dx"
+            ],
             "title": "Physical Deposition",
             "image": "cover.png",
             "description": "Physical Deposition process using the \"NonlinearDeposition\"-Model."
+        },
+        {
+            "devicelevel": 3,
+            "prefixpath": "stackednanosheet",
+            "parfile": "parwasm.txt",
+            "geometries": [
+                "sio2_periodic.vtk",
+                "mask_periodic.vtk",
+                "single_gate_mask.vtk"
+            ],
+            "title": "Stacked Nanosheet",
+            "image": "cover.png",
+            "description": "Geometry creation of a stacked nanosheet geometry through a sequence of emulated processes, i.e., using the \"ConstantRates\"-Model and boolean operations"
         }
-
     ]
 }

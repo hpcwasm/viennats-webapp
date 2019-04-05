@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,13 +14,15 @@ export class DeviceinfoService {
 
   support: boolean= false;
   supportCheck: boolean = true;
+  supportTryAnywayMessage: string;
 
   disableSupportCheck(){
     this.supportCheck = false;
+    this.router.navigate(['/simulation']);
   }
 
   
-  constructor(public deviceService: DeviceDetectorService) {
+  constructor(public deviceService: DeviceDetectorService,private router: Router) {
     
     this.wasmSupport = this.checkwebAssemblySupport();
     this.isDesktop = this.deviceService.isDesktop();
@@ -30,7 +32,9 @@ export class DeviceinfoService {
     if (this.isTablet)this.deviceLevel = 2;
     if (this.isMobile)this.deviceLevel = 1;
 
-    this.support = this.wasmSupport && this.deviceService.device != "iPhone";
+    // this.support = this.wasmSupport && this.deviceService.device != "iPhone";
+    this.support = this.wasmSupport && this.isDesktop!;
+    this.supportTryAnywayMessage = "At the moment we recommend a Desktop browser with WebAssembly support";
     this.supportCheck = true;    
    }
 
