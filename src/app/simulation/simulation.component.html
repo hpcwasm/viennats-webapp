@@ -1,48 +1,59 @@
-<mat-accordion [multi]="true">
+<div *ngIf="validID;then content else other_content">here is ignored</div>
+<ng-template #content>
 
-  <!-- Parameters -->
-  <mat-expansion-panel expanded="false">
-    <mat-expansion-panel-header>
-      <mat-panel-title fxFlex="100px">
-        Settings
-      </mat-panel-title>
-      <mat-panel-description>
-         Loaded: {{webworkerService.parfiles[webworkerService.selectedSimIdx]?.title || " "}}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <app-parameters></app-parameters>
-  </mat-expansion-panel>
+  <mat-accordion [multi]="true">
 
-  <!-- Simulation -->
-  <mat-expansion-panel expanded="false">
-    <mat-expansion-panel-header>
-      <mat-panel-title fxFlex="100px" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-        Simulation
-      </mat-panel-title>
-      <mat-panel-description fxLayout="row" fxFlex fxLayoutAlign="start center" fxLayoutGap="10px">
-          <button mat-flat-button color="primary" [disabled]="webworkerService.status == 'running' || webworkerService.status ==  'initializing' ||  webworkerService.status ==  'exception' " (click)="startSimulation();$event.stopPropagation();" matTooltip="Start simulation using parameters defined above">Start</button>
-          <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'" (click)="terminateSimulation();$event.stopPropagation();">reload</button>
-        <div fxLayout="row">
-        <div [style.color]="webworkerService.getStatusColor(webworkerService.status)">
-            &nbsp;{{webworkerService.status}}</div>
-        </div>
-        <!-- Start/stop simulation and view console output -->
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <app-simulationstatus></app-simulationstatus>
-  </mat-expansion-panel>
+    <!-- Parameters -->
+    <mat-expansion-panel expanded="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title fxFlex="100px">
+          Settings
+        </mat-panel-title>
+        <mat-panel-description>
+          Loaded: {{webworkerService.parfiles[webworkerService.selectedSimIdx]?.title || " "}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-parameters></app-parameters>
+    </mat-expansion-panel>
 
-  <!-- results -->
-  <mat-expansion-panel expanded="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title fxFlex="100px">
-        Results Viewer
-      </mat-panel-title>
-      <mat-panel-description>
-        Current number of outputs: {{this.webworkerService.results.length}}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <app-results></app-results>
-  </mat-expansion-panel>
+    <!-- Simulation -->
+    <mat-expansion-panel expanded="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title fxFlex="100px" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+          Simulation
+        </mat-panel-title>
+        <mat-panel-description fxLayout="row" fxFlex fxLayoutAlign="start center" fxLayoutGap="10px">
+          <button mat-flat-button color="primary" [disabled]="webworkerService.status == 'running' || webworkerService.status ==  'initializing' ||  webworkerService.status ==  'exception' "
+            (click)="startSimulation();$event.stopPropagation();" matTooltip="Start simulation using parameters defined above">Start</button>
+          <button mat-stroked-button color="warn" [disabled]="webworkerService.status == 'terminating' || webworkerService.status ==  'initializing' || webworkerService.status ==  'idle'"
+            (click)="terminateSimulation();$event.stopPropagation();">reload</button>
+          <div fxLayout="row">
+            <div [style.color]="webworkerService.getStatusColor(webworkerService.status)">
+              &nbsp;{{webworkerService.status}}</div>
+          </div>
+          <!-- Start/stop simulation and view console output -->
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-simulationstatus></app-simulationstatus>
+    </mat-expansion-panel>
 
-</mat-accordion>
+    <!-- results -->
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title fxFlex="100px">
+          Results Viewer
+        </mat-panel-title>
+        <mat-panel-description>
+          Current number of outputs: {{this.webworkerService.results.length}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-results></app-results>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+</ng-template>
+
+
+<ng-template #other_content>
+  Simulation path not found.
+</ng-template>

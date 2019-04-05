@@ -8,14 +8,24 @@ import {ConsoleComponent} from './console/console.component';
 import {HomeComponent} from './home/home.component';
 import {NosupportService} from './services/routeguard/nosupport.service';
 import {SimulationComponent} from './simulation/simulation.component';
+import {SimulationstatusComponent} from './simulationstatus/simulationstatus.component';
+import {ResultsComponent} from './results/results.component';
+import {ParametersComponent} from './parameters/parameters.component';
+
 
 
 export const routes: Routes = [
   {path: 'browserinfo', component: BrowserinfoComponent},
   {
-    path: 'simulation',
+    path: 'simulation/:simpath',
     component: SimulationComponent,
-    canActivate: [NosupportService]
+    canActivate: [NosupportService],
+    children: [
+      { path: '', component: ParametersComponent },
+      { path: '', component: ResultsComponent },
+      { path: '', component: SimulationstatusComponent },
+    ]
+    
   },
   {path: 'home', component: HomeComponent, canActivate: [NosupportService]},
   {path: '', redirectTo: '/home', pathMatch: 'full'},

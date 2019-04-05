@@ -16,7 +16,7 @@ import vtkColorMaps from 'vtk.js/Sources/Rendering/Core/ColorTransferFunction/Co
 import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';
 import {ColorMode, ScalarMode,} from 'vtk.js/Sources/Rendering/Core/Mapper/Constants';
 // https://stackoverflow.com/questions/48643556/use-vtk-js-glsl-files-in-angular-cli-app
-
+import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import vtkFullScreenRenderWindow from 'vtk.js/Sources/Rendering/Misc/FullScreenRenderWindow';
 import vtkGenericRenderWindow from 'vtk.js/Sources/Rendering/Misc/GenericRenderWindow';
 
@@ -36,6 +36,10 @@ class Color {
 })
 export class ResultsComponent implements OnInit, OnDestroy {
   // files: File[] = [];
+
+  parentRouteId: string;
+  private sub: any;
+
 
   @ViewChild('vtkview') vtkview: any;
   fullScreenRenderer: any;
@@ -131,7 +135,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   constructor(
       public webworkerService: WebworkerService,
-      private fileSaverService: FileSaverService) {
+      private fileSaverService: FileSaverService,private router: Router, private route: ActivatedRoute) {
     this.lookupTable = vtkColorTransferFunction.newInstance();
 
     var colors: number[][] = [];
@@ -208,6 +212,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Get parent ActivatedRoute of this route.
+    this.sub = this.route.parent.params.subscribe((params => {
+      this.parentRouteId = params['simpath'];
+    }));
     this.initRenderWindow();
   }
 
@@ -327,6 +335,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // unsubscribe to ensure no memory leaks
     this.subscription.unsubscribe();
     this.subscriptionResulstCleared.unsubscribe();
+    this.sub.unsubscribe();
   }
 
   displayOutput(idx: number) {

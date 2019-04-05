@@ -29,10 +29,12 @@ export class HomeComponent {
           this.webworkerService.clearResults();
           this.webworkerService.sendClearConsoleLog();
           this.webworkerService.loadsim(simidx);
-          this.router.navigate(['/simulation']);
+          // this.router.navigate(['/simulation']);
+          this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
         } else if (result == 'continue') {
           // route to running simulation
-          this.router.navigate(['/simulation']);
+          // this.router.navigate(['/simulation']);
+          this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
         } else {
           // NOTE: The result can also be nothing if the user presses the `esc`
           // key or clicks outside the dialog
@@ -42,7 +44,8 @@ export class HomeComponent {
       this.webworkerService.clearResults();
       this.webworkerService.sendClearConsoleLog();
       this.webworkerService.loadsim(simidx);
-      this.router.navigate(['/simulation']);
+      // this.router.navigate(['/simulation']);
+      this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
     }
   }
 }
