@@ -161,8 +161,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     for (let i = 0; i < colors.length; i++) {
       // console.log(colors[i]);
       // console.log(i);
-      this.lookupTable.addRGBPoint(i, colors[i][0], colors[i][1], colors[i][2]);
-      ++i;
+      this.lookupTable.addRGBPoint(i, colors[i][0]/255.0, colors[i][1]/255.0, colors[i][2]/255.0);
     }
 
     // this.lookupTable.addRGBPoint(0, 1, 0, 0);
