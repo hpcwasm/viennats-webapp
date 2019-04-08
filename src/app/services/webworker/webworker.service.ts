@@ -87,6 +87,7 @@ export class WebworkerService {
     return 'black';
   }
 
+  parfilesReady: EventEmitter<any> = new EventEmitter();
   simulationFinished: EventEmitter<any> = new EventEmitter();
   simulationStarted: EventEmitter<any> = new EventEmitter();
   exceptionInCPP: EventEmitter<any> = new EventEmitter();
@@ -108,7 +109,7 @@ export class WebworkerService {
       }
       this.selectedSimIdx = 0;
       this.loadsim(this.selectedSimIdx);
-
+      this.sendParfilesReady();
 
       this.initializeSimulation();
     });
@@ -274,4 +275,16 @@ export class WebworkerService {
   getNewResults(): Observable<any> {
     return this.newresult.asObservable();
   }
+
+  // parfiles ready
+  private parfilesready = new Subject<any>();
+
+  sendParfilesReady() {
+    this.parfilesready.next();
+  }
+
+  getParfilesReady(): Observable<any> {
+    return this.parfilesready.asObservable();
+  }
+
 }

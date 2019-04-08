@@ -3,7 +3,7 @@
   <div fxFlex="1 0 100%" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
     <div>
       ViennaTS
-      <span class="mat-body-2">{{this.router.url}}</span>
+      <!-- <span class="mat-body-2">{{this.router.url}}</span> -->
     </div>
 
     <div>
@@ -22,7 +22,7 @@
   <button mat-menu-item routerLink="/home">
     Home
   </button>
-  <button mat-menu-item routerLink="/simulation">
+  <button *ngIf="this.parfilesReady" mat-menu-item routerLink="/simulation/{{webworkerService.parfiles[webworkerService.selectedSimIdx].prefixpath}}">
     Simulation
   </button>
   <button mat-menu-item routerLink="/browserinfo">

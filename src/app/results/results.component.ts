@@ -140,6 +140,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
     var colors: number[][] = [];
 
+    // colors.push([255,0,0]);
+    // colors.push([0,255,0]);
+    // colors.push([0,0,255]);
     colors.push([230, 25, 75]);
     colors.push([60, 180, 75]);
     colors.push([255, 225, 25]);
@@ -163,10 +166,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // console.log(colors);
 
     for (let i = 0; i < colors.length; i++) {
-      // console.log(colors[i]);
-      // console.log(i);
-      this.lookupTable.addRGBPoint(i, colors[i][0], colors[i][1], colors[i][2]);
-      ++i;
+      console.log(colors[i]);
+      console.log(i);
+      this.lookupTable.addRGBPoint(i, colors[i][0]/255.0, colors[i][1]/255.0, colors[i][2]/255.0);
     }
 
     // this.lookupTable.addRGBPoint(0, 1, 0, 0);
