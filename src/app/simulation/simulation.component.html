@@ -1,4 +1,4 @@
-<div *ngIf="validID;then content else other_content">here is ignored</div>
+<div *ngIf="validID && !isLoading;then content else other_content">here is ignored</div>
 <ng-template #content>
 
   <mat-accordion [multi]="true">
@@ -55,5 +55,27 @@
 
 
 <ng-template #other_content>
-  Simulation path not found.
+  <div *ngIf="isLoading">
+    
+    <mat-card >
+        <mat-card-header>
+            <mat-card-title>Loading</mat-card-title>
+            <mat-card-subtitle></mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-progress-bar color="primary" mode="buffer"></mat-progress-bar>
+        </mat-card-content>
+    </mat-card>
+  </div>
+  <div *ngIf="!isLoading">
+      <mat-card >
+          <mat-card-header>
+              <mat-card-title>Invalid simulation name</mat-card-title>
+              <mat-card-subtitle>Check simulation name ({{routeID.toLowerCase()}}) or nativate to <a routerLink="/home" routerLinkActive="active">home</a>.</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+ 
+          </mat-card-content>
+      </mat-card>
+  </div>
 </ng-template>

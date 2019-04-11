@@ -15,6 +15,7 @@
       number:'.2-2'}},{{this.renderer.getActiveCamera().getPosition()[1] |
       number:'.2-2'}},{{this.renderer.getActiveCamera().getPosition()[2] | number:'.2-2'}}]</div>
   </div>
+
   <div fxLayout="column">
     <div fxLayoutAlign="center start">
       <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center start">
@@ -72,10 +73,21 @@
           <div *ngIf="this.webworkerService.results.length == 0">
             No outputs available. Intermediate results will be loaded here during the simulation.
           </div>
+          <div *ngIf="this.webworkerService.errors.length != 0">
+            <div *ngFor="let error  of this.webworkerService.errors;  index as eridx" fxLayout="row" fxLayoutAlign="center center">
+              <div>{{error.filename}}</div>
+              <mat-icon (click)="downloadError(eridx)" svgIcon="mydownload"></mat-icon>
+            </div>
+          </div>
           <div *ngIf="this.webworkerService.results.length != 0" fxLayout="row" fxLayoutAlign="center center">
             <div>{{this.webworkerService.results[activeResultsIndex].filename}}</div>
             <mat-icon (click)="downloadResult(activeResultsIndex)" svgIcon="mydownload"></mat-icon>
           </div>
+          <div *ngIf="this.webworkerService.results.length != 0" fxLayout="row">
+            <div>{{this.webworkerService.results[activeResultsIndex].filename+'.png'}}</div>
+            <mat-icon (click)="downloadImage(activeResultsIndex)" svgIcon="mydownload"></mat-icon>
+          </div>          
+
           <!-- <mat-list-item fxLayoutAlign="center center" role="listitem" *ngFor="let file  of this.webworkerService.results;  index as i">
             <mat-checkbox color="primary" [(checked)]="this.webworkerService.results[this.webworkerService.results.length-i-1].selected"
               (change)="changeVisibility(this.webworkerService.results.length-i-1)">{{this.webworkerService.results[this.webworkerService.results.length-i-1].filename}}

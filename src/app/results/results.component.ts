@@ -166,8 +166,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
     // console.log(colors);
 
     for (let i = 0; i < colors.length; i++) {
-      console.log(colors[i]);
-      console.log(i);
+      // console.log(colors[i]);
+      // console.log(i);
       this.lookupTable.addRGBPoint(i, colors[i][0]/255.0, colors[i][1]/255.0, colors[i][2]/255.0);
     }
 
@@ -388,5 +388,34 @@ export class ResultsComponent implements OnInit, OnDestroy {
         [this.webworkerService.results[idx].vtkfile], {type: 'text/plain'});
     this.fileSaverService.save(
         blob, this.webworkerService.results[idx].filename);
+  }
+  downloadError(idx: number) {
+    console.log(
+        '############ download: ' +
+        this.webworkerService.errors[idx].filename);
+    var blob = new Blob(
+        [this.webworkerService.errors[idx].vtkfile], {type: 'text/plain'});
+    this.fileSaverService.save(
+        blob, this.webworkerService.errors[idx].filename);
+  }
+  downloadImage(idx: number){
+    // this.renderer.captureImage();
+    // console.log(this.renderWindow.captureImages);
+    // console.log(this.renderWindow.captureImages());
+    this.renderWindow.captureImages()[0].then((data)=>{
+      // console.log(data);
+      var pngdata = data.replace(/^data:image\/\w+;base64,/, "");
+      const byteCharacters = atob(pngdata);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }      
+      const byteArray = new Uint8Array(byteNumbers);
+      var blob = new Blob(
+        [byteArray], {type: 'image/png'});
+    this.fileSaverService.save(
+        blob, this.webworkerService.results[idx].filename+ '.png');
+
+    });
   }
 }

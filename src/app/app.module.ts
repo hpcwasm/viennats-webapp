@@ -45,6 +45,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatRadioModule} from '@angular/material/radio';
 
 import { FileSaverModule } from 'ngx-filesaver';
+import { Cancelsim2Component } from './cancelsim2/cancelsim2.component';
 
 
 // import {RouteReuseStrategy} from '@angular/router';
@@ -64,7 +65,8 @@ import { FileSaverModule } from 'ngx-filesaver';
     SimulationstatusComponent,
     ResultsComponent,
     CancelsimComponent,
-    NosupportComponent
+    NosupportComponent,
+    Cancelsim2Component
   ],
   imports: [
     // BrowserAnimationsModule,
@@ -79,7 +81,7 @@ import { FileSaverModule } from 'ngx-filesaver';
    FlexLayoutModule, FileSaverModule
   ],
   bootstrap: [AppComponent],
-  entryComponents: [CancelsimComponent]
+  entryComponents: [CancelsimComponent,Cancelsim2Component]
 })
 export class AppModule {
 }

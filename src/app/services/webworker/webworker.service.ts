@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {EventEmitter, Injectable} from '@angular/core';
+import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, NavigationEnd, Router, RouterStateSnapshot, UrlSegment, UrlSegmentGroup} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {ResultsComponent} from 'src/app/results/results.component';
 import vtkPlane from 'vtk.js/Sources/Common/DataModel/Plane';
@@ -33,6 +34,9 @@ export class Result {
       public clipnorm: number[], public clipplane: vtkPlane) {}
 }
 
+export class Error {
+  constructor(public vtkfile: string, public filename: string) {}
+}
 
 @Injectable({providedIn: 'root'})
 export class WebworkerService {
@@ -58,6 +62,7 @@ export class WebworkerService {
   }
 
   results: Result[] = [];
+  errors: Error[] = [];
 
   simulationWorkerFilePath: string = './assets/js/vtsworker.js';
   simulationWorker: any = undefined;
@@ -96,7 +101,11 @@ export class WebworkerService {
   resultReady: EventEmitter<any> = new EventEmitter();
   // stdoutReady: EventEmitter<any> = new EventEmitter();
 
-  constructor(private http: HttpClient, public deviceinfo: DeviceinfoService) {
+  private routerevent: any;
+
+  constructor(
+      private http: HttpClient, public deviceinfo: DeviceinfoService,
+      private router: Router) {
     this.getSimulations().subscribe(data => {
       console.log('received simulation_examples.json');
       // console.log(data);
@@ -113,12 +122,70 @@ export class WebworkerService {
 
       this.initializeSimulation();
     });
+
+    this.routeEvent(this.router);
+  }
+
+  updatefromRoute(simpath: string) {
+    if (this.parfiles.length > 0) {
+      const currentpath = this.parfiles[this.selectedSimIdx].prefixpath;
+      // find new index
+      let newidx = undefined;
+      for (let idx = 0; idx != this.parfiles.length; ++idx) {
+        if (this.parfiles[idx].prefixpath.toLowerCase() == simpath) {
+          newidx = idx;
+          break;
+        }
+      }
+      console.log('newidx=' + newidx);
+      // only if valid url
+      if (newidx != undefined) {
+        // check if simpath is valid
+        // check if simpath differs to current state -> no action
+        if (newidx == this.selectedSimIdx) {
+          console.log('newidx == this.selectedSimIdx, do nothing');
+          // do nothing
+        } else {
+          console.log('newidx != this.selectedSimIdx');
+          // check if running other sim
+          if (this.status == 'running' || this.status == 'exception') {
+            // respawn
+            console.log('respawn');
+            this.respawnSimulation();
+          }
+          // cleanup
+          console.log('cleanup');
+          this.clearResults();
+          this.sendClearConsoleLog();
+          this.loadsim(newidx);
+        }
+      }
+    }
+  }
+
+  routeEvent(router: Router) {
+    router.events.subscribe(e => {
+      if (e instanceof NavigationEnd) {
+        console.log('#################router navigation end');
+        var myRegexp = /\/simulation\/(.*)/;
+        var arr = this.router.url.match(/\/simulation\/(.*)/);
+        if (arr != null) {  // Did it match?
+          console.log('trigger update');
+          console.log(arr[1]);
+          const simpath = arr[1].toLowerCase();
+          this.updatefromRoute(simpath);
+        }
+      }
+    });
   }
 
   clearResults() {
     // this.results.length = 0;
     while (this.results.length > 0) {
       this.results.pop();
+    }
+    while (this.errors.length > 0) {
+      this.errors.pop();
     }
     this.sendResultsCleared();
   }
@@ -218,6 +285,7 @@ export class WebworkerService {
           console.log(
               '(main) message received: fileready, file=' + data.data.filename);
           let filenameonly = data.data.filename.replace(/^.*[\\\/]/, '');
+          console.log('filenameonly:' + filenameonly);
           this.results.push(new Result(
               data.data.filecontent, filenameonly, vtkCutter.newInstance(),
               vtkActor.newInstance(), undefined, undefined, undefined,
@@ -225,6 +293,18 @@ export class WebworkerService {
           this.resultReady.next(this.results.length - 1);
           console.log(this.results.length - 1);
           this.sendNewResult(this.results.length - 1);
+          // console.log(this.results);
+        }
+        if (data.data.filename.endsWith('.vtp') &&
+            data.data.filename.includes('Error')) {
+          console.log(
+              '(main) message received: errorfileready, file=' +
+              data.data.filename);
+          let filenameonly = data.data.filename.replace(/^.*[\\\/]/, '');
+          console.log('filenameonly:' + filenameonly);
+          this.errors.push(new Error(data.data.filecontent, filenameonly));
+          console.log(this.results.length - 1);
+          this.sendNewError(this.errors.length - 1);
           // console.log(this.results);
         }
         if (data.data.filename.endsWith('.vtu')) {
@@ -276,6 +356,17 @@ export class WebworkerService {
     return this.newresult.asObservable();
   }
 
+  private newerror = new Subject<any>();
+
+  sendNewError(idx: number) {
+    this.newerror.next({index: idx});
+  }
+
+  getNewErrors(): Observable<any> {
+    return this.newerror.asObservable();
+  }
+
+
   // parfiles ready
   private parfilesready = new Subject<any>();
 
@@ -286,5 +377,4 @@ export class WebworkerService {
   getParfilesReady(): Observable<any> {
     return this.parfilesready.asObservable();
   }
-
 }

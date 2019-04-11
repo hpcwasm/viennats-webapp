@@ -37,30 +37,31 @@ export const routes: Routes = [
   {path: '**', redirectTo: '/home'},
 
 ];
-
+// https://stackoverflow.com/questions/41280471/how-to-implement-routereusestrategy-shoulddetach-for-specific-routes-in-angular
 // https://stackoverflow.com/questions/44875644/custom-routereusestrategy-for-angulars-child-module
 export class CustomReuseStrategy implements RouteReuseStrategy {
   handlers: {[key: string]: DetachedRouteHandle} = {};
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    console.log("## shouldDetach");
+    console.log("## shouldDetach "+(route.data.shouldReuse || false));
     return route.data.shouldReuse || false;
   }
 
   store(route: ActivatedRouteSnapshot, handle: {}): void {
-    console.log("## store");
+    console.log("## store ");
     if (route.data.shouldReuse && this.getUrl(route)) {
+      console.log("## storeing "+ handle);
       this.handlers[this.getUrl(route)] = handle;
     }
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    console.log("## shouldAttach");
+    console.log("## shouldAttach "+!!this.handlers[this.getUrl(route)]);
     return !!this.handlers[this.getUrl(route)];
   }
 
   retrieve(route: ActivatedRouteSnapshot): any {
-    console.log("## retrieve");
+    console.log("## retrieve "+this.handlers[this.getUrl(route)]);
     if (!this.getUrl(route)) {
       return null;
     }

@@ -13,9 +13,18 @@ var Module = {
     j = JSON.parse(str)
     if (j.fileready === true) {
       // get file content and augment json object with it
-      console.log('(worker) fileready');
-      fileAsString =
-          FS.readFile(j.filename, {'encoding': 'utf8', 'flags': 'r'});
+      console.log('(worker) fileready ' + j.filename);
+      if (j.filename.includes('Error')) {
+        console.log("### reading error file: " + '/' + j.filename);
+        fileAsString = FS.readFile(
+             '/' + j.filename,
+            {'encoding': 'utf8', 'flags': 'r'});
+            // console.log(fileAsString);
+      } else {
+        fileAsString =
+            FS.readFile(j.filename, {'encoding': 'utf8', 'flags': 'r'});
+      }
+
       console.log('(worker) fileAsString');
       // console.log(fileAsString);
       j['filecontent'] = fileAsString;
@@ -39,6 +48,8 @@ var Module = {
 
 importScripts('../buildwasm/viennats.js');
 
+var currentsimdir = '/';
+
 // message from GUI
 onmessage =
     function(e) {
@@ -50,18 +61,19 @@ onmessage =
       console.log('(worker) writing geofiles');
       // console.log(e.data.FSfolder);
       try {
-        
-        const dir = "/"+e.data.FSfolder;
+        const dir = '/' + e.data.FSfolder;
+        currentsimdir = dir;
         // console.log(dir);
         FS.mkdir(dir);
       } catch (err) {
         console.log('(worker) dir already exists');
-      }       
+      }
       for (var i = 0; i != e.data.geomtries.length; ++i)
       // e.data.geomtries.forEach(function(geofile)
       {
-        const BEgeofilepath = "../simulations/"+e.data.FSfolder+"/" + e.data.geomtries[i];
-        const FSgeofilepath = "/"+e.data.FSfolder+"/" + e.data.geomtries[i];
+        const BEgeofilepath =
+            '../simulations/' + e.data.FSfolder + '/' + e.data.geomtries[i];
+        const FSgeofilepath = '/' + e.data.FSfolder + '/' + e.data.geomtries[i];
         // console.log(BEgeofilepath);
         // console.log(FSgeofilepath);
         const response = await fetch(BEgeofilepath);
@@ -71,13 +83,14 @@ onmessage =
       };
 
       // write content of editor to FS
-      const parfilepath = "/"+e.data.FSfolder+"/" + e.data.parfile;
+      const parfilepath = '/' + e.data.FSfolder + '/' + e.data.parfile;
       // console.log(parfilepath);
 
-      const newfile = e.data.parfilestring.replace(/".\//g,"\"/"+e.data.FSfolder+"/");
+      const newfile =
+          e.data.parfilestring.replace(/".\//g, '"/' + e.data.FSfolder + '/');
       console.log(newfile);
       // console.log(e.data.parfilestring);
-      FS.writeFile(parfilepath,newfile);
+      FS.writeFile(parfilepath, newfile);
 
       try {
         Module.runfile(parfilepath);

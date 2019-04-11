@@ -34,12 +34,12 @@ export class HomeComponent {
         } else if (result == 'continue') {
           // route to running simulation
           // this.router.navigate(['/simulation']);
-          this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
+          this.router.navigate(['/simulation',this.webworkerService.parfiles[this.webworkerService.selectedSimIdx].prefixpath]);
         } else {
           // NOTE: The result can also be nothing if the user presses the `esc`
           // key or clicks outside the dialog
         }
-      })
+      });
     } else {
       this.webworkerService.clearResults();
       this.webworkerService.sendClearConsoleLog();
