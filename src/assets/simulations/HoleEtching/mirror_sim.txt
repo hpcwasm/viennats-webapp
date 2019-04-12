@@ -1,0 +1,86 @@
+geometry_files="./bulk.vtk";
+
+print_rates=false;
+print_velocities=false;
+print_materials=false;
+print_vtk=false;
+print_lvst=false;
+remove_bottom=true;
+
+output_path="./results/";
+
+cfl_condition = 0.45;
+
+grid_delta=1.999999;
+input_scale=1.0;
+
+default_disk_orientation={0,0,1};
+
+num_dimensions = 3;
+
+omp_threads=8;
+
+open_boundary="+z";
+
+boundary_conditions = {
+	{REFLECTIVE,REFLECTIVE},
+	{REFLECTIVE,REFLECTIVE},
+	{INFINITE,INFINITE}
+};
+
+
+print_volume_tetra=false;
+print_volume_hull=true;
+
+
+
+processes={
+    {
+        model_name="Mask";
+        parameters={
+            mask_file="./mask.vtk";
+        };
+    },
+    {
+		model_name="SimpleDeposition";
+
+		process_time=160;
+		//output_times_periodicity=100;
+		//output_times_period_length=10;
+		output_volume={0, 50,100,160};
+		parameters={
+			direction={0, 0, -1};
+
+			flux=1;
+            yields={-0.05,0.00};
+            sticking_probabilities={0.01,0.0};
+
+			stop_criterion=0.01;
+			statistical_accuracy=100;
+		};
+	},
+    {
+        model_name="Planarization";
+        parameters={
+            coordinate=0;
+        };
+    },
+    {
+		model_name="SimpleDeposition";
+
+		process_time=960;
+		output_volume={0,300,600,960};
+		
+		parameters={
+			direction={0, 0, -1};
+
+			flux=1;
+            yields={-0.03,0.00};
+            sticking_probabilities={0.01,0.0};
+
+			stop_criterion=0.01;
+			statistical_accuracy=100;
+		};
+	}
+};
+

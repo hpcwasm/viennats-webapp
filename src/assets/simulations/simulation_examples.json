@@ -102,6 +102,18 @@
             "title": "Stacked Nanosheet",
             "image": "cover.png",
             "description": "Geometry creation of a stacked nanosheet geometry through a sequence of emulated processes, i.e., using the \"ConstantRates\"-Model and boolean operations"
+        },
+        {
+            "devicelevel": 3,
+            "prefixpath": "HoleEtching",
+            "parfile": "mirror_sim.txt",
+            "geometries": [
+                "bulk.vtk",
+                "mask.vtk"
+            ],
+            "title": "Two-stage Hole Etching",
+            "image": "cover.png",
+            "description": "Physical etching of a cylindrical hole using the \"SimpleDeposition\"-Model with the sign flipped. First stage with a mask, second after mask removal. The symmetry allows to only simulate a quarter of the cylindric hole by applying reflective boundary conditions in the lateral directions."
         }
     ]
 }
