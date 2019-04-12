@@ -1,0 +1,69 @@
+geometry_file = "./3d_hole.vtk";
+
+print_statistics=false;
+
+output_path = "./output_3d/";
+
+omp_threads=1;
+num_dimensions = 3;
+input_scale=0.5e-6;
+
+cfl_condition = 0.5;
+grid_delta=1e-6;
+
+
+open_boundary="+y";
+
+boundary_conditions = {
+	{PERIODIC, PERIODIC},
+	{INFINITE, INFINITE},
+	{PERIODIC, PERIODIC}
+};
+
+default_disk_orientation={0,1,0};
+
+print_vtp=false;
+print_lvst=false;
+print_volume_hull=true;
+print_volume_tetra=false;
+
+processes = {
+     {
+	finite_difference_scheme=ENGQUIST_OSHER_1ST_ORDER;
+	partition_data_structure=NEIGHBOR_LINKS_ARRAYS;
+	process_time=10;
+        add_layer=1;
+	model_name="NonlinearDeposition";
+	parameters= {
+		direction		= {-0.5,-1,0};
+		deposition_rate		= 1e-6;
+		sticking_probability	= 1.;
+		reaction_order		= 1.;
+		stop_criterion		= 0.1;
+		statistical_accuracy	= 50.;
+	};
+	print_velocities=false;
+	final_output=true;
+        output_volume={0,2,5,10};
+     },
+     {
+	finite_difference_scheme=ENGQUIST_OSHER_1ST_ORDER;
+	partition_data_structure=NEIGHBOR_LINKS_ARRAYS;
+	process_time=10;
+        add_layer=1;
+	model_name="NonlinearDeposition";
+	parameters= {
+		direction		= {0,-1,0};
+		deposition_rate		= 1e-6;
+		sticking_probability	= 1.;
+		reaction_order		= 1.;
+		stop_criterion		= 0.1;
+		statistical_accuracy	= 50.;
+	};
+	print_velocities=false;
+	final_output=true;
+        output_volume={2,5,10};
+     }
+};
+
+

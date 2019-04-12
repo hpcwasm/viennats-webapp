@@ -1,9 +1,9 @@
 geometry_files="./bulk.vtk";
 
-print_rates=true;
-print_velocities=true;
-print_materials=true;
-print_vtp=true;
+print_rates=false;
+print_velocities=false;
+print_materials=false;
+print_vtp=false;
 print_lvst=false;
 remove_bottom=true;
 

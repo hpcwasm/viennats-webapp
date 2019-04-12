@@ -1,9 +1,9 @@
 geometry_files="./trench_mask.dx";
 
-print_rates=true;
-print_velocities=true;
-print_materials=true;
-print_vtp=true;
+print_rates=false;
+print_velocities=false;
+print_materials=false;
+print_vtp=false;
 print_lvst=false;
 remove_bottom=true;
 
@@ -11,7 +11,7 @@ output_path="./results_tilted/";
 
 cfl_condition = 0.45;
 
-grid_delta=0.49999;
+grid_delta=0.29999;
 
 default_disk_orientation={0,1,0};
 
@@ -44,7 +44,7 @@ processes={
 		final_output=true;
 		
 		parameters= {
-			direction={-0.05,-1,0};
+			direction={0,-1,0};
 
 			length_scale=1e-9; // scale in metres, the scale used here is nanometres
 

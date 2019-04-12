@@ -231,7 +231,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     const cellvalues = polydata.getCellData().getScalars();
 
     console.log('############## renderResultPlayer');
-    console.log(cellvalues.getRange());
+    // console.log(cellvalues.getRange());
     // console.log(this.webworkerService.results[index].mapper);
 
 
@@ -291,8 +291,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.webworkerService.results[index].actor.setMapper(mapper);
     this.renderer.addActor(this.webworkerService.results[index].actor);
 
-    console.log(this.lookupTable);
-    console.log(this.lookupTable.getMappingRange());
+    // console.log(this.lookupTable);
+    // console.log(this.lookupTable.getMappingRange());
 
 
     var lookupTable = this.lookupTable;
@@ -307,7 +307,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
     const lut = mapper.getLookupTable();
     // lut.updateRange();
-    console.log(lut.getMappingRange());
+    // console.log(lut.getMappingRange());
 
     if (index == 0) {
       this.renderer.resetCamera();

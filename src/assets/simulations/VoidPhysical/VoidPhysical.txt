@@ -1,10 +1,10 @@
 geometry_files="./trench.vtk";
 surface_geometry=true;
 
-print_rates=true;
-print_velocities=true;
-print_materials=true;
-print_vtp=true;
+print_rates=false;
+print_velocities=false;
+print_materials=false;
+print_vtp=false;
 print_lvst=false;
 remove_bottom=true;
 
@@ -12,7 +12,7 @@ output_path="./results/";
 
 cfl_condition = 0.45;
 
-grid_delta=0.49999;
+grid_delta=0.09999;
 
 default_disk_orientation={0,1,0};
 

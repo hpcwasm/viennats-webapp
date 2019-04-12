@@ -17,7 +17,7 @@ default_disc_orientation = {0,0,1};
 
 num_dimensions = 3;
 
-print_vtk=true;
+print_vtk=false;
 print_volume_hull=true;
 print_volume_tetra=false;
 print_lvst=false;
