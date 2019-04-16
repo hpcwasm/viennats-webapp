@@ -25,12 +25,13 @@ export class HomeComponent {
       let dialogRef = this.dialog.open(CancelsimComponent);
       dialogRef.afterClosed().subscribe(result => {
         if (result == 'abort') {
+          this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
           this.webworkerService.respawnSimulation();
           this.webworkerService.clearResults();
           this.webworkerService.sendClearConsoleLog();
           this.webworkerService.loadsim(simidx);
           // this.router.navigate(['/simulation']);
-          this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
+          
         } else if (result == 'continue') {
           // route to running simulation
           // this.router.navigate(['/simulation']);
@@ -41,11 +42,15 @@ export class HomeComponent {
         }
       });
     } else {
+      if (this.webworkerService.status == 'uninitialized'){
+        this.webworkerService.respawnSimulation();
+      }
+      this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
       this.webworkerService.clearResults();
       this.webworkerService.sendClearConsoleLog();
       this.webworkerService.loadsim(simidx);
       // this.router.navigate(['/simulation']);
-      this.router.navigate(['/simulation',this.webworkerService.parfiles[simidx].prefixpath]);
+     
     }
   }
 }

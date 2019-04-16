@@ -29,8 +29,9 @@
             (click)="terminateSimulation();$event.stopPropagation();">reload</button>
           <div fxLayout="row">
             <div [style.color]="webworkerService.getStatusColor(webworkerService.status)">
-              &nbsp;{{webworkerService.status}}</div>
-          </div>
+              &nbsp;{{webworkerService.status}} </div>
+              <div [style.color]="webworkerService.getStatusColor(webworkerService.status)" fxShow fxHide.lt-md="true">{{webworkerService.status == "exception" ? ':'+ (webworkerService.statusInfo | slice:0:20)+'... (check console log)' : ''}}</div>
+            </div>
           <!-- Start/stop simulation and view console output -->
         </mat-panel-description>
       </mat-expansion-panel-header>

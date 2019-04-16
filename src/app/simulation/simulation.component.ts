@@ -66,9 +66,12 @@ export class SimulationComponent implements OnInit, OnDestroy {
         console.log(
             this.webworkerService.parfiles[idx].prefixpath.toLowerCase());
         // if valid url
-        var newrouteisDiff = this.routeID.toLowerCase() !=
-            this.webworkerService.parfiles[this.webworkerService.selectedSimIdx]
-                .prefixpath;
+        var newrouteisDiff = this.webworkerService.selectedSimIdx == undefined ?
+            false :
+            this.routeID.toLowerCase() !=
+                this.webworkerService
+                    .parfiles[this.webworkerService.selectedSimIdx]
+                    .prefixpath;
         var newrouteisValid = this.routeID.toLowerCase() ==
             this.webworkerService.parfiles[idx].prefixpath.toLowerCase();
         console.log('############ newrouteisDiff ' + newrouteisDiff);
@@ -77,7 +80,8 @@ export class SimulationComponent implements OnInit, OnDestroy {
           // but check if we are running
           if (this.webworkerService.status == 'running' && newrouteisDiff) {
             // console.log(
-            //     '############ running something different, so, abort and reroute');
+            //     '############ running something different, so, abort and
+            //     reroute');
             // this.webworkerService.respawnSimulation();
             // this.webworkerService.clearResults();
             // this.webworkerService.sendClearConsoleLog();

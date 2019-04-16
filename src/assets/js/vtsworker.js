@@ -15,11 +15,12 @@ var Module = {
       // get file content and augment json object with it
       console.log('(worker) fileready ' + j.filename);
       if (j.filename.includes('Error')) {
-        console.log("### reading error file: " + '/' + j.filename);
-        fileAsString = FS.readFile(
-             '/' + j.filename,
-            {'encoding': 'utf8', 'flags': 'r'});
-            // console.log(fileAsString);
+        console.log(
+            '### reading error file: ' +
+            '/' + j.filename);
+        fileAsString =
+            FS.readFile('/' + j.filename, {'encoding': 'utf8', 'flags': 'r'});
+        // console.log(fileAsString);
       } else {
         fileAsString =
             FS.readFile(j.filename, {'encoding': 'utf8', 'flags': 'r'});
@@ -35,6 +36,22 @@ var Module = {
     else {postMessage(j)};
   },
   onRuntimeInitialized: function() {
+    // copied from
+    Module.abort = function(what) {
+      if (Module['onAbort']) {
+        Module['onAbort'](what)
+      }
+      if (what !== undefined) {
+        out(what);
+        err(what);
+        what = JSON.stringify(what)
+      } else {
+        what = ''
+      }
+      ABORT = true;
+      EXITSTATUS = 1;
+      throw 'abort(' + what + ')';
+    };
     Module.vtswasm.SetCallback(Module.CPPCallback);
     console.log('(worker) onRuntimeInitialized ready');
     message = {'runtimeready': true};
@@ -95,7 +112,8 @@ onmessage =
       try {
         Module.runfile(parfilepath);
       } catch (err) {
-        message = {'runtimeexception': true};
+        console.log(err);
+        message = {'runtimeexception': true, 'message': err};
         postMessage(message);
       }
     };

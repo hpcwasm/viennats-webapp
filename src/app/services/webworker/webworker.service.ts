@@ -68,8 +68,9 @@ export class WebworkerService {
   simulationWorker: any = undefined;
 
   // other components will depend on this string
-  public status: string = undefined;  // "initializing", "terminating",
+  public status: string = undefined;  // "uninitialized", "initializing", "terminating",
                                       // "running", "idle", "exception"
+  public statusInfo: string = undefined;
 
   getStatusColor(status: string): string {
     switch (status) {
@@ -116,11 +117,12 @@ export class WebworkerService {
               example.title, example.image, example.description, false));
         }
       }
-      this.selectedSimIdx = 0;
-      this.loadsim(this.selectedSimIdx);
+      this.selectedSimIdx = undefined;
+      this.status = 'uninitialized';
+      // this.loadsim(this.selectedSimIdx);
       this.sendParfilesReady();
 
-      this.initializeSimulation();
+      // this.initializeSimulation();
     });
 
     this.routeEvent(this.router);
@@ -128,7 +130,7 @@ export class WebworkerService {
 
   updatefromRoute(simpath: string) {
     if (this.parfiles.length > 0) {
-      const currentpath = this.parfiles[this.selectedSimIdx].prefixpath;
+      // const currentpath = this.parfiles[this.selectedSimIdx].prefixpath;
       // find new index
       let newidx = undefined;
       for (let idx = 0; idx != this.parfiles.length; ++idx) {
@@ -148,7 +150,7 @@ export class WebworkerService {
         } else {
           console.log('newidx != this.selectedSimIdx');
           // check if running other sim
-          if (this.status == 'running' || this.status == 'exception') {
+          if (this.status == 'uninitialized' ||  this.status == 'running' || this.status == 'exception') {
             // respawn
             console.log('respawn');
             this.respawnSimulation();
@@ -217,12 +219,12 @@ export class WebworkerService {
     }
   }
   respawnSimulation() {
-    if (this.simulationWorker) {
+    if (this.simulationWorker != undefined) {
       this.status = 'terminating';
       this.simulationWorker.terminate();
       this.simulationWorker = undefined;
-      this.initializeSimulation();
     }
+    this.initializeSimulation();
   }
 
   parfilecontent: string = '// empty parameter file';
@@ -313,15 +315,21 @@ export class WebworkerService {
           console.log('.vtu file format not supported');
           // console.log(this.results);
         }
-      } else if (data.data.stdout === true || data.data.stderr === true) {
-        console.log(
-            '(main) message received: stdout/stderr, text=' + data.data.text);
+      } else if (data.data.stdout === true) {
+        console.log('(main) message received: stdout, text=' + data.data.text);
         // this.stdoutReady.next(data.data.text);
         // console.log(data.data);
-        this.sendConsoleLine(data.data.text);
+        this.sendConsoleLine(data.data.text, false);
+      } else if (data.data.stderr === true) {
+        console.log('(main) message received: stderr, text=' + data.data.text);
+        // this.stdoutReady.next(data.data.text);
+        // console.log(data.data);
+        this.sendConsoleLine(data.data.text, true);
       } else if (data.data.runtimeexception === true) {
-        console.log('(main) webworker reported a runtime exception in C++');
+        console.log('(main) webworker reported a runtime exception in C++:');
+        console.log(data.data.message);
         this.status = 'exception';
+        this.statusInfo = data.data.message;
         this.exceptionInCPP.next(true);
         // this.respawnSimulation();
       } else {
@@ -333,8 +341,8 @@ export class WebworkerService {
 
   private newconsoleline = new Subject<any>();
 
-  sendConsoleLine(line: string) {
-    this.newconsoleline.next({text: line});
+  sendConsoleLine(line: string, red: boolean) {
+    this.newconsoleline.next({text: line, isred: red});
   }
 
   // clearMessage() {
@@ -371,6 +379,7 @@ export class WebworkerService {
   private parfilesready = new Subject<any>();
 
   sendParfilesReady() {
+    console.log("sendParfilesReady()");
     this.parfilesready.next();
   }
 

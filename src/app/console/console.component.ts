@@ -23,7 +23,13 @@ export class ConsoleComponent implements OnInit, OnDestroy {
   constructor(public webworkerService: WebworkerService) {
     this.subscription =
         this.webworkerService.getConsoleLine().subscribe(message => {
-          this.printline(message.text);
+          // console.log("getConsoleLine()");
+          // console.log(message);
+          if (message.isred == true) {
+            this.printlineRED(message.text);
+          } else {
+            this.printline(message.text);
+          }
         });
     // clear console listener
     this.subscriptionclearConsole =
@@ -60,6 +66,10 @@ export class ConsoleComponent implements OnInit, OnDestroy {
 
   printline(line: string) {
     this.term.writeln(line);
+  }
+
+  printlineRED(line: string) {
+    this.term.writeln('\u001b[31m' + line + '\u001b[30m');
   }
 
   clearConsole() {

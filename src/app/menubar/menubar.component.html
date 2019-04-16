@@ -22,8 +22,8 @@
   <button mat-menu-item routerLink="/home">
     Home
   </button>
-  <button *ngIf="this.parfilesReady" mat-menu-item routerLink="/simulation/{{webworkerService.parfiles[webworkerService.selectedSimIdx].prefixpath}}">
-    Simulation
+  <button *ngIf="this.parfilesReady && webworkerService.selectedSimIdx !=undefined" mat-menu-item routerLink="/simulation/{{webworkerService.parfiles[webworkerService.selectedSimIdx].prefixpath}}">
+    Simulation ({{webworkerService.parfiles[webworkerService.selectedSimIdx].title}})
   </button>
   <button mat-menu-item routerLink="/browserinfo">
     Browser Info
