@@ -42,6 +42,7 @@ cp $HPCWASM_WASM_BIN_DIR/viennats.wasm $HPCWASM_WEBAPP_ASSETS/viennats.wasm
 
 ```bash
 ng serve
+ng serve --host 0.0.0.0 --disable-host-check # access via http://localhostORdomain:4200/#
 ```
 
 # deploy

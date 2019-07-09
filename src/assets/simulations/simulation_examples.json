@@ -2,6 +2,17 @@
     "simulations": [
         {
             "devicelevel": 1,
+            "prefixpath": "iPhoneTest",
+            "parfile": "importTest.txt",
+            "geometries": [
+                "square.dx"
+            ],
+            "title": "iPhoneTest",
+            "image": "cover.png",
+            "description": "iPhoneTest"
+        },
+        {
+            "devicelevel": 1,
             "prefixpath": "CylinderEmulate",
             "parfile": "CylinderEmulate.txt",
             "geometries": [
@@ -114,6 +125,30 @@
             "title": "Two-stage Hole Etching",
             "image": "cover.png",
             "description": "Physical etching of a cylindrical hole using the \"SimpleDeposition\"-Model with the sign flipped. First stage with a mask, second after mask removal. The symmetry allows to only simulate a quarter of the cylindric hole by applying reflective boundary conditions in the lateral directions."
-        }
+        },
+        {
+            "devicelevel": 3,
+            "prefixpath": "WetEtching",
+            "parfile": "rect_mask_etch.txt",
+            "geometries": [
+                "rect_substrate.vtk",
+                "mask_rect_hole.vtk"
+            ],
+            "title": "Wet Etching",
+            "image": "cover.png",
+            "description": "Wet Etching Example."
+        },
+        {
+            "devicelevel": 3,
+            "prefixpath": "SelectiveEpitaxy",
+            "parfile": "cantilever.txt",
+            "geometries": [
+                "cantilever_substrate.vtk",
+                "mask_cantilever.vtk"
+            ],
+            "title": "Selective Epitaxy",
+            "image": "cover.png",
+            "description": "Selective Epitaxy Example."
+        }        
     ]
 }
