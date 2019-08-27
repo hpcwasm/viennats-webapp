@@ -7,6 +7,7 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '
 export class DeviceinfoService {
 
   wasmSupport: boolean = false;
+  wasmThreadsSupport: boolean = false;
   isDesktop: boolean = false;
   isTablet: boolean = false;
   isMobile: boolean = false;
@@ -25,6 +26,7 @@ export class DeviceinfoService {
   constructor(public deviceService: DeviceDetectorService,private router: Router) {
     
     this.wasmSupport = this.checkwebAssemblySupport();
+    this.wasmThreadsSupport = this.checkwebAssemblyThreadsSupport();
     this.isDesktop = this.deviceService.isDesktop();
     this.isTablet = this.deviceService.isTablet();
     this.isMobile = this.deviceService.isMobile();
@@ -33,8 +35,9 @@ export class DeviceinfoService {
     if (this.isMobile)this.deviceLevel = 1;
 
     // this.support = this.wasmSupport && this.deviceService.device != "iPhone";
-    this.support = this.wasmSupport && this.isDesktop!;
-    this.supportTryAnywayMessage = "At the moment we recommend a Desktop browser with WebAssembly support";
+    this.support = this.wasmSupport;
+    // this.support = this.wasmSupport && this.isDesktop!;
+    this.supportTryAnywayMessage = "Your browsing device is suitable. For high performance simulations, we recommend a recent desktop browser.";
     this.supportCheck = true;    
    }
 
@@ -51,10 +54,31 @@ export class DeviceinfoService {
                 WebAssembly.Instance;
         }
       } catch (e) {
+        console.log("wasm  not supported");
       }
       return false;
     })();
     return supported;
   }
+  checkwebAssemblyThreadsSupport(): boolean {
+    let WebAssembly = (window as any).global.WebAssembly;
+    const supported = (() => {
+      try {
+        let wasmMemory = new WebAssembly.Memory({initial:1024, maximum:1024, shared: true});
+        var sab = new SharedArrayBuffer(1024);
+        var int32 = new Int32Array(sab);
+        Atomics.store(int32, 0, 123); 
+        // TODO: construct minimal threaded wasm file to check support thorougly
+        if (wasmMemory.buffer instanceof SharedArrayBuffer){
+          return true;
+        }
+      } catch (e) {
+        console.log("wasm threads not supported");
+        console.log(e);
+      }
+      return false;
+    })();
+    return supported;
+  }  
 
 }
