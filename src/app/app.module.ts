@@ -31,6 +31,7 @@ import { MatDialogModule ,MatBadgeModule} from '@angular/material';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserinfoComponent} from './browserinfo/browserinfo.component';
+import {ReferencesComponent} from './references/references.component';
 import {CodemirrorComponent} from './codemirror/codemirror.component';
 import {ConsoleComponent} from './console/console.component';
 import {HomeComponent} from './home/home.component';
@@ -61,6 +62,7 @@ import { Cancelsim2Component } from './cancelsim2/cancelsim2.component';
     HomeComponent,
     SimulationComponent,
     BrowserinfoComponent,
+    ReferencesComponent,
     ParametersComponent,
     SimulationstatusComponent,
     ResultsComponent,

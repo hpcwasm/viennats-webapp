@@ -4,6 +4,7 @@ import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy} from '@
 
 // import {CustomReuseStrategy} from './app-routing-reuse';
 import {BrowserinfoComponent} from './browserinfo/browserinfo.component';
+import {ReferencesComponent} from './references/references.component';
 import {ConsoleComponent} from './console/console.component';
 import {HomeComponent} from './home/home.component';
 import {ParametersComponent} from './parameters/parameters.component';
@@ -16,6 +17,7 @@ import {SimulationstatusComponent} from './simulationstatus/simulationstatus.com
 
 export const routes: Routes = [
   {path: 'browserinfo', component: BrowserinfoComponent},
+  {path: 'references', component: ReferencesComponent},
   {
     path: 'simulation/:simpath',
     component: SimulationComponent,
