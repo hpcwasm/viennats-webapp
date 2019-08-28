@@ -1,0 +1,67 @@
+geometry_file = "./fin_substrate.vtk";
+output_path = "fin3d_fin_substrate_0_dx_0p000999999_0p5";  // relative to this file or absolute
+
+omp_threads=4; // how many CPU threads to use
+input_scale=1;
+cfl_condition = 0.5;  // advection accuracy, must be <0.5
+
+grid_delta = 0.001999999;
+
+
+default_disc_orientation = {0,1,0};
+num_dimensions = 3;
+remove_bottom=true;
+
+print_vtp=false;
+print_volume_hull=true;
+print_volume_tetra=false;
+print_lvst=false;
+
+
+boundary_conditions = {
+	{REFLECTIVE,REFLECTIVE},
+	{REFLECTIVE,REFLECTIVE},
+	{INFINITE,INFINITE}
+};
+
+open_boundary="+z"; //direction of source plane
+
+processes = {
+
+     {
+        model_name="Mask";
+    
+        parameters={
+            mask_file="./fin_oxide.vtk";
+            remove_bottom=false;
+            
+        };
+    },
+    {
+    process_time= 10;
+    model_name="SelectiveDeposition";
+		finite_difference_scheme=STENCIL_LOCAL_LAX_FRIEDRICHS;
+
+
+    /*
+      The following are process specific parameters:
+    */
+    parameters= {
+      direction100={0.7071067811865476,0.7071067811865475,0};
+      direction010={-0.7071067811865475,0.7071067811865476,0};
+			
+      rates100=0.008333333333333333;
+      rates110=0.0033333333333333335;
+      rates111=0.0008333333333333334;
+      rates311=0.004166666666666667;
+      depo_possible={1,0};
+			
+    };
+
+    // Start outputting at time t=0
+    //output_times_period_length =  1;
+    //output_times_periodicity= 5;
+    //output_times={0};
+    output_volume={0.0,1.0,2.0,3.0,4.0,5.0};
+  }
+};

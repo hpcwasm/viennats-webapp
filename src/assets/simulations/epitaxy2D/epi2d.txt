@@ -1,0 +1,59 @@
+
+
+geometry_file = "./trench2d.dx";
+output_path = "epi2d_etch2d_2_0_dx_0p0085_0p5";  // relative to this file or absolute
+
+omp_threads=1; // how many CPU threads to use
+input_scale=1;
+cfl_condition =0.5;  // advection accuracy, must be <0.5
+grid_delta = 0.0085;
+
+default_disc_orientation = {0,1,0};
+num_dimensions = 2;
+remove_bottom=true;
+
+print_vtp=false;
+print_volume_hull=true;
+print_volume_tetra=false;
+print_lvst=false;
+
+boundary_conditions = {
+	{REFLECTIVE,REFLECTIVE},
+	{INFINITE,INFINITE}
+};
+
+
+open_boundary="+y"; //direction of source plane
+
+
+processes = {
+
+    {
+    process_time= 550;
+    model_name="SelectiveDeposition";
+		finite_difference_scheme=STENCIL_LOCAL_LAX_FRIEDRICHS;
+
+
+    /*
+      The following are process specific parameters:
+    */
+    parameters= {
+      direction100={0,1,0};
+      direction010={1,0,-1};
+	
+      rates100=0.008333333333333333;
+      rates110=0.0033333333333333335;
+      rates111=0.0008333333333333334;
+      rates311=0.004166666666666667;
+      depo_possible={1,0};
+
+    };
+
+    // Start outputting at time t=0
+    //output_times_period_length =  5;
+    //output_times_periodicity= 71;
+    //output_times={0};
+    output_volume={0,20,50,100,150,200,250,300,350,450,550};
+    
+  }
+};

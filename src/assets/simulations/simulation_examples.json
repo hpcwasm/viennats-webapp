@@ -139,7 +139,32 @@
             "image": "cover.png",
             "description": "Wet Etching Example."
         }  
-,
+        ,
+        {
+            "devicelevel": 1,
+            "prefixpath": "epitaxy2D",
+            "parfile": "epi2d.txt",
+            "geometries": [
+                "trench2d.dx"
+            ],
+            "title": "Selective Epitaxy 2D",
+            "image": "cover.png",
+            "description": "2D Selective Epitaxy example."
+        }  
+        ,
+        {
+            "devicelevel": 2,
+            "prefixpath": "epitaxy3D",
+            "parfile": "fin3d.txt",
+            "geometries": [
+                "fin_oxide.vtk",
+                "fin_substrate.vtk"
+            ],
+            "title": "Selective Epitaxy 3D",
+            "image": "cover.png",
+            "description": "3D Selective Epitaxy example."
+        }          
+        ,
         {
             "devicelevel": 2,
             "prefixpath": "DoublePatterning",
