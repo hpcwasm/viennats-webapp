@@ -32,7 +32,7 @@
                 <h4 mat-line>Desktop Device: {{deviceinfo.isDesktop}}</h4>
                 <!-- <mat-icon svgIcon="mydesktop"></mat-icon> -->
             </mat-list-item>
-            <mat-list-item *ngIf="deviceinfo.isTablet" [ngClass]="{green: !deviceinfo.isTablet, red: deviceinfo.isTablet}">
+            <mat-list-item *ngIf="deviceinfo.isTablet" [ngClass]="{green: !deviceinfo.isTablet, yellow: deviceinfo.isTablet}">
                 <h4 mat-line>Tablet Device: {{deviceinfo.isTablet}}</h4>
                 <!-- <mat-icon svgIcon="mytablet"></mat-icon> -->
             </mat-list-item>
