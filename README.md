@@ -47,7 +47,7 @@ ng serve --host 0.0.0.0 --disable-host-check # access via http://localhostORdoma
 
 # deploy
 ```bash
-ng build --prod
+ng build --prod --base-href "/" # use this for viennats.github.io
 ng build --prod --base-href "https://hpcwasm.github.io/viennats/"
 ```
 
