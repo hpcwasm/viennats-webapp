@@ -120,6 +120,7 @@ export class WebworkerService {
               example.title, example.image, example.description, false, example.devicelevel));
         }
       }
+      this.showSimulationsLevel = this.deviceinfo.deviceLevel;
       this.selectedSimIdx = undefined;
       this.status = 'uninitialized';
       // this.loadsim(this.selectedSimIdx);

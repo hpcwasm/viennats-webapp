@@ -16,6 +16,7 @@ export class HomeComponent {
   constructor(
       public webworkerService: WebworkerService, private router: Router, public deviceinfo: DeviceinfoService,
       private dialog: MatDialog) {
+        console.log("deviceLevel=" +this.deviceinfo.deviceLevel);
   }
 
 
