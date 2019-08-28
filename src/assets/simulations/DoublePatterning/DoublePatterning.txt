@@ -1,0 +1,98 @@
+geometry_file = "./2D_slab.dx";   
+
+output_path = "./outputs2_narrow/";
+
+omp_threads=1;
+cfl_condition = 0.4;
+
+grid_delta = 0.49999; // non-integer for numerical stability
+
+
+default_disc_orientation = {0,1,0};
+
+num_dimensions = 2;
+
+print_vtp=true;
+print_volume_hull=true;
+print_volume_tetra=false;
+print_lvst=false;
+
+boundary_conditions = {
+	{PERIODIC, PERIODIC},
+	{INFINITE,INFINITE}
+};
+
+open_boundary="+y"; //direction of source plane
+
+processes = {
+  {		// MASK ADDITION
+    model_name="Mask";
+
+    parameters={
+      mask_file = "./2D_double_mask.dx";
+      surface_geometry=false;
+      remove_bottom=false;
+    };
+  },
+  {		// DOUBLE PATTERNING DEPOSITION
+    process_time= 15;
+
+    model_name="ConstantRates";
+    add_layer=1;
+    parameters= {
+      constant_rates={1.0, 1.0, 1.0};
+    };
+    output_volume={0,15};
+  },
+  {		// DOUBLE PATTERNING MASK PATTERNING
+    process_time= 17;
+
+    model_name="ConstantRates";
+    parameters= {
+      directional_rates={-1.0};
+      direction={0,-1, 0};
+    };
+    output_volume={17};
+  },
+  {		// REMOVE ORIGINAL MASK
+    model_name="BooleanOperation";
+    parameters= {
+      levelset=0; // use bottom levelset (mask)
+      level=-2; // subtract from all lower ones
+      invert=true;
+      remove_levelset=true;
+      wrap_lower_surface=false;
+    };
+  },
+  {
+	model_name="NonlinearDeposition";
+	process_time=150;
+
+	output_volume={0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150};
+
+	parameters= {
+		direction		= {0,-1,0};
+		deposition_rates		= {0, -0.2, 0};
+		sticking_probability	= 0.6;
+		reaction_order		= 1.5;
+		stop_criterion		= 0.6;
+		statistical_accuracy	= 50.;
+    distribution_order = 50;
+	};
+  }
+
+
+  /*{		// ETCH DIRECTIONALLY
+    process_time= 5;
+
+    model_name="ConstantRates";
+    parameters= {
+      directional_rates={-1.0, 0};
+      direction={0,-1,0};
+    };
+    //output_times={10};
+    output_volume={0, 5};
+  }*/
+
+
+};

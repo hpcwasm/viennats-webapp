@@ -11,7 +11,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatFormFieldModule} from '@angular/material/form-field';
-
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
@@ -47,6 +47,7 @@ import {MatRadioModule} from '@angular/material/radio';
 
 import { FileSaverModule } from 'ngx-filesaver';
 import { Cancelsim2Component } from './cancelsim2/cancelsim2.component';
+import { UseroptionsComponent } from './useroptions/useroptions.component';
 
 
 // import {RouteReuseStrategy} from '@angular/router';
@@ -68,11 +69,12 @@ import { Cancelsim2Component } from './cancelsim2/cancelsim2.component';
     ResultsComponent,
     CancelsimComponent,
     NosupportComponent,
-    Cancelsim2Component
+    Cancelsim2Component,
+    UseroptionsComponent
   ],
   imports: [
     // BrowserAnimationsModule,
-    NoopAnimationsModule,
+    NoopAnimationsModule, MatSlideToggleModule,
     MatIconModule, MatToolbarModule, MatInputModule, MatFormFieldModule, MatBadgeModule, 
     MatExpansionModule, BrowserModule, AppRoutingModule, MatMenuModule,
     MatButtonModule, MatTooltipModule, MatSliderModule, MatSnackBarModule, MatCardModule, MatDialogModule,

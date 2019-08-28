@@ -2,17 +2,6 @@
     "simulations": [
         {
             "devicelevel": 1,
-            "prefixpath": "iPhoneTest",
-            "parfile": "importTest.txt",
-            "geometries": [
-                "square.dx"
-            ],
-            "title": "iPhoneTest",
-            "image": "cover.png",
-            "description": "iPhoneTest"
-        },
-        {
-            "devicelevel": 1,
             "prefixpath": "CylinderEmulate",
             "parfile": "CylinderEmulate.txt",
             "geometries": [
@@ -140,15 +129,28 @@
         },
         {
             "devicelevel": 3,
-            "prefixpath": "SelectiveEpitaxy",
+            "prefixpath": "WetEtchingCantilever",
             "parfile": "cantilever.txt",
             "geometries": [
                 "cantilever_substrate.vtk",
                 "mask_cantilever.vtk"
             ],
-            "title": "Selective Epitaxy",
+            "title": "Wet Etching Cantilever",
             "image": "cover.png",
-            "description": "Selective Epitaxy Example."
-        }        
+            "description": "Wet Etching Example."
+        }  
+,
+        {
+            "devicelevel": 2,
+            "prefixpath": "DoublePatterning",
+            "parfile": "DoublePatterning.txt",
+            "geometries": [
+                "2D_slab.dx",
+                "2D_double_mask.dx"
+            ],
+            "title": "Double Patterning",
+            "image": "cover.png",
+            "description": "2D Double Patterning Example."
+        } 
     ]
 }

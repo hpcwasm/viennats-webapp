@@ -1,0 +1,21 @@
+<mat-card class="result">
+    <mat-card-content>
+      <h2 class="example-h2">Useroptions</h2>
+  
+      <section class="example-section">
+          <label class="example-margin">Show simulations for:</label>
+          <mat-radio-group [(ngModel)]="devicelevel" (change)="updateDevicelevel()" >
+            <mat-radio-button class="example-margin" color="primary" value="1">
+              Mobile
+            </mat-radio-button>
+            <mat-radio-button class="example-margin" color="primary" value="2">
+              Tablet
+            </mat-radio-button>
+            <mat-radio-button class="example-margin" color="primary" value="3">
+              Desktop/Notebook
+            </mat-radio-button>
+          </mat-radio-group>
+        </section>
+    </mat-card-content>
+  </mat-card>
+

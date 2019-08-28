@@ -19,12 +19,13 @@ export interface ParFile {
   image: string;
   description: string;
   geoready: boolean;
+  devicelevel: number;
 }
 class ParFileClass implements ParFile {
   constructor(
       public prefixpath: string, public parfile: string,
       public geometries: string[], public title: string, public image: string,
-      public description: string, public geoready: boolean) {}
+      public description: string, public geoready: boolean, public devicelevel: number) {}
 }
 
 export class Result {
@@ -42,6 +43,7 @@ export class Error {
 export class WebworkerService {
   parfiles: ParFile[] = [];
 
+  showSimulationsLevel = 0;
   //  selectedParfile: string = undefined;
   // selectedParfile: string;
   selectedSimIdx: number;
@@ -111,10 +113,11 @@ export class WebworkerService {
       console.log('received simulation_examples.json');
       // console.log(data);
       for (let example of data.simulations) {
-        if (this.deviceinfo.deviceLevel >= example.devicelevel) {
+        // if (this.deviceinfo.deviceLevel >= example.devicelevel) {
+        if (this.deviceinfo.deviceLevel >= 0) {
           this.parfiles.push(new ParFileClass(
               example.prefixpath, example.parfile, example.geometries,
-              example.title, example.image, example.description, false));
+              example.title, example.image, example.description, false, example.devicelevel));
         }
       }
       this.selectedSimIdx = undefined;

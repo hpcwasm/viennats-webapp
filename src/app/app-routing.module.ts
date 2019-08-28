@@ -11,6 +11,7 @@ import {ParametersComponent} from './parameters/parameters.component';
 import {ResultsComponent} from './results/results.component';
 import {NosupportService} from './services/routeguard/nosupport.service';
 import {SimulationComponent} from './simulation/simulation.component';
+import { UseroptionsComponent } from './useroptions/useroptions.component';
 import {SimulationstatusComponent} from './simulationstatus/simulationstatus.component';
 
 // export const routesToCache: string[] = ['simulation'];
@@ -18,6 +19,7 @@ import {SimulationstatusComponent} from './simulationstatus/simulationstatus.com
 export const routes: Routes = [
   {path: 'browserinfo', component: BrowserinfoComponent},
   {path: 'references', component: ReferencesComponent},
+  {path: 'useroptions', component: UseroptionsComponent},
   {
     path: 'simulation/:simpath',
     component: SimulationComponent,

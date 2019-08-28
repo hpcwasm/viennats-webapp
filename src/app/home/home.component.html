@@ -13,6 +13,7 @@
       <div fxLayout="row wrap" fxLayoutGap="20px grid" fxLayoutAlign="center start">
         <div *ngFor="let example of webworkerService.parfiles; index as idx">
             <!-- <mat-card *ngIf="i<5" class="example-card" > -->
+           <ng-container *ngIf="webworkerService.showSimulationsLevel  >=  example.devicelevel">
           <mat-card class="example-card" >
             <mat-card-header>
               <mat-card-title style="margin-left:-20px;">{{example.title}}</mat-card-title>
@@ -39,8 +40,11 @@
               <button mat-raised-button (click)="runsimulation(idx)">RUN SIMULATION</button>
             </mat-card-actions>
           </mat-card>
+        </ng-container>
         </div>
       </div>
     </div>
   </div>
 </mat-card>
+
+

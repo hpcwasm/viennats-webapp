@@ -3,7 +3,7 @@ import {MatDialog} from '@angular/material';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {CancelsimComponent} from '../cancelsim/cancelsim.component';
 import {WebworkerService} from '../services/webworker/webworker.service';
-
+import {DeviceinfoService} from '../services/deviceinfo/deviceinfo.service';
 
 
 @Component({
@@ -14,7 +14,7 @@ import {WebworkerService} from '../services/webworker/webworker.service';
 export class HomeComponent {
 
   constructor(
-      public webworkerService: WebworkerService, private router: Router,
+      public webworkerService: WebworkerService, private router: Router, public deviceinfo: DeviceinfoService,
       private dialog: MatDialog) {
   }
 

@@ -42,7 +42,7 @@ processes={
 
 	parameters= {
 		direction		= {0,-1,0};
-		deposition_rate		= 0.1;
+		deposition_rates		= {0.1,0.1};
 		sticking_probability	= 0.1;
 		reaction_order		= 1.;
 		stop_criterion		= 0.1;
