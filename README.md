@@ -54,7 +54,7 @@ ng build --prod --base-href "/" # use this for viennats.github.io
 ng build --prod --base-href "https://hpcwasm.github.io/viennats/"
 
 
-# make compatible for a lot of browsers
+# make compatible for a lot of older browsers (somehow i do not know how to integrate this with angular cli)
 for file in ./dist/websimapp/*.js ; do \
     echo $file; \
     ./node_modules/.bin/babel "$file" --out-file "${file}.babel" --presets @babel/preset-env

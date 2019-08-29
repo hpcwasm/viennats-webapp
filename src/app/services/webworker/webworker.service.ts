@@ -286,11 +286,14 @@ export class WebworkerService {
         this.status = 'idle';
         this.simulationFinished.next(true);
       } else if (data.data.fileready === true) {
+        console.log("data.data.fileready ===true");
         if (data.data.filename.endsWith('.vtp') &&
             data.data.filename.includes('Hull')) {
           console.log(
               '(main) message received: fileready, file=' + data.data.filename);
           let filenameonly = data.data.filename.replace(/^.*[\\\/]/, '');
+          console.log("data.data");
+          // console.log(data.data);
           console.log('filenameonly:' + filenameonly);
           this.results.push(new Result(
               data.data.filecontent, filenameonly, vtkCutter.newInstance(),

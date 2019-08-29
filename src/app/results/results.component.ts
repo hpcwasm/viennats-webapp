@@ -179,6 +179,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.subscription =
         this.webworkerService.getNewResults().subscribe(message => {
           // this.renderResult(message.index);
+          console.log("getNewResults subscriber")
           this.renderResultPlayer(message.index);
         });
     this.subscriptionResulstCleared =
@@ -223,14 +224,17 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
 
   renderResultPlayer(index: number) {
+    // console.log('############## renderResultPlayer');
     const encoder = new TextEncoder();
+    // console.log('############## renderResultPlayer 0');
     const buffer = encoder.encode(this.webworkerService.results[index].vtkfile);
+    // console.log('############## renderResultPlayer 00');
     var vtpReader = vtkXMLPolyDataReader.newInstance();
     vtpReader.parseAsArrayBuffer(buffer);
     var polydata = vtpReader.getOutputData(0);
     const cellvalues = polydata.getCellData().getScalars();
 
-    console.log('############## renderResultPlayer');
+    
     // console.log(cellvalues.getRange());
     // console.log(this.webworkerService.results[index].mapper);
 
@@ -312,7 +316,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     if (index == 0) {
       this.renderer.resetCamera();
     }
-
+    // console.log('############## renderResultPlayer 4');
     let props = this.renderer.getViewProps();
     props[index].setVisibility(false);
     if (this.playing || this.activeResultsIndex == undefined) {
@@ -325,6 +329,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     } else {
       // nothing to update
     }
+    // console.log('############## renderResultPlayer end');
   }
 
   resetCamera() {

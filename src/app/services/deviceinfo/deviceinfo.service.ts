@@ -54,6 +54,7 @@ export class DeviceinfoService {
     }
     else {
       this.supportMessage = "Your browser is not suitable."
+      this.supportMessageNote = this.supportMessageNote + "(No WebAssembly Support)";
     }
     
    }
