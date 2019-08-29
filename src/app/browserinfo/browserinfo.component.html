@@ -1,7 +1,7 @@
 <mat-card class="example-card">
     <mat-card-header>
         <mat-card-title>Your Browsing Device</mat-card-title>
-        <mat-card-subtitle>{{deviceinfo.supportTryAnywayMessage}} </mat-card-subtitle>
+        <mat-card-subtitle>For best performance and high resolutions, we recommend a recent desktop/laptop browser. </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
         <mat-list>
@@ -9,17 +9,16 @@
             <div *ngIf="deviceinfo.support;then content else other_content">here is ignored</div>
             <ng-template #content>
                 <mat-list-item [ngClass]="{green: true}">
-                    <h4 mat-line>Your browser is suitable (see details below).</h4>
+                    <h4 mat-line>{{deviceinfo.supportMessage}} {{deviceinfo.supportMessageNote}}  </h4>
                 </mat-list-item>
             </ng-template>
             <ng-template #other_content>
                 <mat-list-item [ngClass]="{red: true}">
-                        Your browser is not suitable.
-               
+                        {{deviceinfo.supportMessage}} {{deviceinfo.supportMessageNote}}
                 </mat-list-item>
-                <mat-list-item *ngIf="deviceinfo.supportCheck" [ngClass]="{red: true}">
+                <!-- <mat-list-item *ngIf="deviceinfo.supportCheck && !deviceinfo.isIE" [ngClass]="{red: true}">
                     <button mat-flat-button color="warn" (click)="disableSupportCheck()">try anyway</button>
-                </mat-list-item>
+                </mat-list-item> -->
             </ng-template>
 
             <mat-list-item [ngClass]="{green: deviceinfo.wasmSupport, red: !deviceinfo.wasmSupport}">
@@ -28,25 +27,25 @@
             <mat-list-item [ngClass]="{green: deviceinfo.wasmThreadsSupport, yellow: !deviceinfo.wasmThreadsSupport}">
                 <h4 mat-line>WebAssembly Threads Support: {{deviceinfo.wasmThreadsSupport}}</h4>                
             </mat-list-item>
-            <mat-list-item *ngIf="deviceinfo.isDesktop" [ngClass]="{green: deviceinfo.isDesktop, red: !deviceinfo.isDesktop}">
-                <h4 mat-line>Desktop Device: {{deviceinfo.isDesktop}}</h4>
+            <mat-list-item *ngIf="deviceinfo.isDesktop" [ngClass]="{green: deviceinfo.isDesktop}">
+                <h4 mat-line>Desktop/Laptop: {{deviceinfo.isDesktop}}</h4>
                 <!-- <mat-icon svgIcon="mydesktop"></mat-icon> -->
             </mat-list-item>
-            <mat-list-item *ngIf="deviceinfo.isTablet" [ngClass]="{green: !deviceinfo.isTablet, yellow: deviceinfo.isTablet}">
+            <mat-list-item *ngIf="deviceinfo.isTablet" [ngClass]="{yellow: deviceinfo.isTablet}">
                 <h4 mat-line>Tablet Device: {{deviceinfo.isTablet}}</h4>
                 <!-- <mat-icon svgIcon="mytablet"></mat-icon> -->
             </mat-list-item>
-            <mat-list-item *ngIf="deviceinfo.isMobile" [ngClass]="{green: !deviceinfo.isMobile, yellow: deviceinfo.isMobile}">
+            <mat-list-item *ngIf="deviceinfo.isMobile" [ngClass]="{yellow: deviceinfo.isMobile}">
                 <h4 mat-line>Mobile Device: {{deviceinfo.isMobile}}</h4>
                 <!-- <mat-icon svgIcon="myphone"></mat-icon> -->
             </mat-list-item>
-            <mat-list-item>
-                <h4 mat-line>Browser: {{deviceinfo.deviceService.browser}}
+            <mat-list-item [ngClass]="{green: !deviceinfo.isIE, red: deviceinfo.isIE}" >
+                <h4 mat-line >Browser: {{deviceinfo.deviceService.browser}}
                     ({{deviceinfo.deviceService.browser_version}})</h4>
             </mat-list-item>
-            <mat-list-item>
+            <!-- <mat-list-item>
                 <h4 mat-line>Device: {{deviceinfo.deviceService.device}}</h4>
-            </mat-list-item>
+            </mat-list-item> -->
             <mat-list-item>
                 <h4 mat-line>Operating System: {{deviceinfo.deviceService.os}}</h4>
             </mat-list-item>

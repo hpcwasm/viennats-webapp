@@ -18,8 +18,8 @@ import {SimulationstatusComponent} from './simulationstatus/simulationstatus.com
 
 export const routes: Routes = [
   {path: 'browserinfo', component: BrowserinfoComponent},
-  {path: 'references', component: ReferencesComponent},
-  {path: 'useroptions', component: UseroptionsComponent},
+  {path: 'references', component: ReferencesComponent,  canActivate: [NosupportService]},
+  {path: 'useroptions', component: UseroptionsComponent,  canActivate: [NosupportService]},
   {
     path: 'simulation/:simpath',
     component: SimulationComponent,

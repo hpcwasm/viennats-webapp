@@ -22,6 +22,9 @@ npm i -D @angular-builders/custom-webpack # needed for vtk.js to load glsl files
 npm i -D @angular-devkit/build-angular
 npm install -D @angular-builders/dev-server
 npm install -D babel-loader @babel/core @babel/preset-env  # https://github.com/babel/babel-loader
+npm install --save-dev babel-plugin-transform-es2015-arrow-functions
+npm install --save-dev babel-plugin-transform-es2015-template-literals
+npm install --save-dev @babel/core @babel/cli
 ```
 # issues with babel 
 https://github.com/babel/babel/issues/8599
@@ -49,6 +52,15 @@ ng serve --host 0.0.0.0 --disable-host-check # access via http://localhostORdoma
 ```bash
 ng build --prod --base-href "/" # use this for viennats.github.io
 ng build --prod --base-href "https://hpcwasm.github.io/viennats/"
+
+
+# make compatible for a lot of browsers
+for file in ./dist/websimapp/*.js ; do \
+    echo $file; \
+    ./node_modules/.bin/babel "$file" --out-file "${file}.babel" --presets @babel/preset-env
+    cp "${file}.babel" "$file"; \
+    rm "${file}.babel"; \
+done;
 ```
 
 # update https://github.com/hpcwasm/viennats

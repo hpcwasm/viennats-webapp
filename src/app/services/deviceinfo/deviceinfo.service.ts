@@ -12,11 +12,11 @@ export class DeviceinfoService {
   isTablet: boolean = false;
   isMobile: boolean = false;
   deviceLevel: number = 0;
-
+  isIE: boolean = false;
   support: boolean= false;
   supportCheck: boolean = true;
-  supportTryAnywayMessage: string;
-
+  supportMessageNote: string;
+  supportMessage: string;
   disableSupportCheck(){
     this.supportCheck = false;
     this.router.navigate(['/simulation']);
@@ -37,8 +37,25 @@ export class DeviceinfoService {
     // this.support = this.wasmSupport && this.deviceService.device != "iPhone";
     this.support = this.wasmSupport;
     // this.support = this.wasmSupport && this.isDesktop!;
-    this.supportTryAnywayMessage = "Your browsing device is suitable. For high performance simulations, we recommend a recent desktop browser.";
-    this.supportCheck = true;    
+    this.supportMessageNote = "";
+    this.supportCheck = true;   
+    if (this.deviceService.browser.includes("IE")) 
+    {
+    console.log("this.deviceService.browser=" +this.deviceService.browser)
+    this.supportMessageNote = "(Internet Explorer is not supported)";
+      // browser is Internet explorer
+    this.support = false;
+    this.isIE = true;
+    } 
+
+    if (this.support)
+    {
+      this.supportMessage = "Your browser is suitable."
+    }
+    else {
+      this.supportMessage = "Your browser is not suitable."
+    }
+    
    }
 
    checkwebAssemblySupport(): boolean {
@@ -64,14 +81,14 @@ export class DeviceinfoService {
     let WebAssembly = (window as any).global.WebAssembly;
     const supported = (() => {
       try {
-        let wasmMemory = new WebAssembly.Memory({initial:1024, maximum:1024, shared: true});
-        var sab = new SharedArrayBuffer(1024);
-        var int32 = new Int32Array(sab);
-        Atomics.store(int32, 0, 123); 
-        // TODO: construct minimal threaded wasm file to check support thorougly
-        if (wasmMemory.buffer instanceof SharedArrayBuffer){
-          return true;
-        }
+        // let wasmMemory = new WebAssembly.Memory({initial:1024, maximum:1024, shared: true});
+        // var sab = new SharedArrayBuffer(1024);
+        // var int32 = new Int32Array(sab);
+        // Atomics.store(int32, 0, 123); 
+        // // TODO: construct minimal threaded wasm file to check support thorougly
+        // if (wasmMemory.buffer instanceof SharedArrayBuffer){
+        //   return true;
+        // }
       } catch (e) {
         console.log("wasm threads not supported");
         console.log(e);

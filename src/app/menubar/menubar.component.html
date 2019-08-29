@@ -19,19 +19,19 @@
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item routerLink="/home">
+  <button [disabled]="!deviceinfo.support" mat-menu-item routerLink="/home">
     Home
   </button>
-  <button *ngIf="this.parfilesReady && webworkerService.selectedSimIdx !=undefined" mat-menu-item routerLink="/simulation/{{webworkerService.parfiles[webworkerService.selectedSimIdx].prefixpath}}">
+  <button [disabled]="!deviceinfo.support" *ngIf="this.parfilesReady && webworkerService.selectedSimIdx !=undefined" mat-menu-item routerLink="/simulation/{{webworkerService.parfiles[webworkerService.selectedSimIdx].prefixpath}}">
     Simulation ({{webworkerService.parfiles[webworkerService.selectedSimIdx].title}})
   </button>
   <button mat-menu-item routerLink="/browserinfo">
     Browser Info
   </button>
-  <button mat-menu-item routerLink="/references">
+  <button [disabled]="!deviceinfo.support" mat-menu-item routerLink="/references">
     References
   </button>  
-  <button mat-menu-item routerLink="/useroptions">
+  <button [disabled]="!deviceinfo.support" mat-menu-item routerLink="/useroptions">
     Useroptions
   </button>    
 </mat-menu>
