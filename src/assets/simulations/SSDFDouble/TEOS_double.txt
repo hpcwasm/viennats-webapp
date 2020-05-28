@@ -1,0 +1,58 @@
+/* This example file uses the units most natural for the problem at hand, which are minutes for time and micrometres for distance. Be careful to always use the correct units when setting parameters! */
+
+geometry_files="./trench.vtk"; // this geometry is scaled in micrometres, so keep this scale
+surface_geometry=true;
+
+print_vtp=true;
+print_volume_hull=true;
+print_volume_tetra=false;
+print_lvst=false;
+
+output_path="./results_two/";
+
+cfl_condition = 0.45;
+
+grid_delta=4.9999;
+
+default_disk_orientation={0,0,1}; // needs to face source plane for ray tracing
+
+num_dimensions = 3;
+
+omp_threads=1;
+
+open_boundary="+z"; // source plane for ray tracing
+
+boundary_conditions = {
+	{PERIODIC, PERIODIC},
+	{PERIODIC, PERIODIC},
+	{INFINITE,INFINITE}
+};
+
+
+processes={
+    {
+	// Deposition for two different species
+	model_name="TwoSpeciesDeposition";
+
+	process_time=350; // Run this process for 350 minutes
+	add_layer=1; // add 1 new material, which we deposit
+
+	// output after 150, 250, 350 minutes, just like in the experiment
+	output_volume={0, 150, 250, 350};
+
+	parameters= {
+		direction={0, 0, -1};
+		rate_main 	      = 0.01;
+		rate_intermediate     = 0.01;
+		sticking_main	      = 1e-4;
+		sticking_intermediate = 1.;
+		reaction_order	      = 1.;
+		stop_criterion	      = 0.1;
+		statistical_accuracy  = 100;
+	};
+    }
+};
+
+
+
+

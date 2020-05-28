@@ -177,5 +177,28 @@
             "image": "cover.png",
             "description": "2D Double Patterning Example."
         } 
+        ,
+        {
+            "devicelevel": 2,
+            "prefixpath": "SSDFSingle",
+            "parfile": "TEOS_single.txt",
+            "geometries": [
+                "trench.vtk"
+            ],
+            "title": "360.246 Assignment 3, Single",
+            "image": "cover.png",
+            "description": "Assignment 3, for the 'Lecture Simulation of Semiconductor Device Fabrication' using the NonlinearDeposition model."
+        },
+        {
+            "devicelevel": 2,
+            "prefixpath": "SSDFDouble",
+            "parfile": "TEOS_double.txt",
+            "geometries": [
+                "trench.vtk"
+            ],
+            "title": "360.246 Assignment 3, Double",
+            "image": "cover.png",
+            "description": "Assignment 3, for the 'Lecture Simulation of Semiconductor Device Fabrication' using the TwoSpeciesDeposition model."
+        }        
     ]
 }

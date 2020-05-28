@@ -1,0 +1,53 @@
+/* This example file uses the units most natural for the problem at hand, which are minutes for time and micrometres for distance. Be careful to always use the correct units when setting parameters! */
+
+geometry_files="./trench.vtk"; // this geometry is scaled in micrometres, so keep this scale
+surface_geometry=true;
+
+print_vtp=true;
+print_volume_hull=true;
+print_volume_tetra=false;
+print_lvst=false;
+
+output_path="./results/";
+
+cfl_condition = 0.45;
+
+grid_delta=4.9999;
+
+default_disk_orientation={0,0,1}; // needs to face source plane for ray tracing
+
+num_dimensions = 3;
+
+omp_threads=1;
+
+open_boundary="+z"; // source plane for ray tracing
+
+boundary_conditions = {
+	{PERIODIC, PERIODIC},
+	{PERIODIC, PERIODIC},
+	{INFINITE,INFINITE}
+};
+
+
+processes={
+    {
+	// This is a generic monte carlo ray tracing model
+	model_name="NonlinearDeposition";
+
+	process_time=350; // Run this process for 350 minutes
+	add_layer=1; // add 1 new material, which we deposit
+
+	// output after 150, 250, 350 minutes, just like in the experiment
+	output_volume={0, 150, 250, 350};
+
+	parameters= {
+		direction		= {0, 0, -1}; // direction in which particles are launched
+		deposition_rates	= {0.01, 0.01}; // deposition rates for the two materials (Si & SiO2) excluding the sticking probability
+		sticking_probability	= 0.1;
+		reaction_order 		= 1.0;
+		stop_criterion		= 0.1; // when to stop ray tracing
+		statistical_accuracy	= 100.; // how many particles to launch per grid point on source plane
+	};
+    }
+};
+
